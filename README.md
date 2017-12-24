@@ -1,0 +1,2 @@
+# FEUP-MFES
+This project aims to model all the information managed by Brand and Celebrities app. Brand and Celebrities created the first platform dedicated to Celebrity Marketing, allowing brands and agencies to identify, analyse and contact the celebrities that are the best fit for their projects (brand ambassador, speaker, entertainer, event sponsor, digital influence, product placement…), but also to finalise a contract with them easily.
