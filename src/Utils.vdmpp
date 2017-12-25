@@ -1,0 +1,22 @@
+class Utils
+types
+-- TODO Define types here
+values
+-- TODO Define values here
+instance variables
+-- TODO Define instance variables here
+operations
+	public static pure DaysOfMonth: nat1 ==> nat1
+	 DaysOfMonth(month) == (
+		if month = 1 or month = 3 or month = 5 or month = 7 or month = 8 or month = 10 or month = 12 then
+			return 31
+		else if month = 2 then
+			return 28
+		else
+			return 30;
+	)
+functions
+-- TODO Define functiones here
+traces
+-- TODO Define Combinatorial Test Traces here
+end Utils

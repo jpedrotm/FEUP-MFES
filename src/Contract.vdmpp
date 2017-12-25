@@ -1,0 +1,53 @@
+class Contract
+types
+	public contractRoles = <ambassador> | <speaker> | <entertainer> | <eventSponsor>
+												| <digitalInfluence> | <productPlacement>;
+	public Date :: year: nat1
+								month: nat1
+								day: nat1
+								inv mk_Date(y,m,d) == m <= 12 and d <= Utils`DaysOfMonth(m); --função para verificar os dias de acordo com o mês
+values
+	-- TODO Define values here
+instance variables
+	private durationTime: nat1;
+	private agency: Agency;
+	private project: Project;
+	private celebrity: [Celebrity] := nil;
+	private totalPrice: nat1;
+operations
+	public Contract(durationT: nat1,a: Agency, p: Project,c: Celebrity,price: nat1) res: Contract == (
+		durationTime := durationT;
+		agency := a;
+		project := p;
+		celebrity := c;
+		totalPrice := price;
+	)
+	post res.durationTime = durationTime and res.agency = agency and res.project = project and res.celebrity = celebrity and res.totalPrice = price;
+	
+	public getDurationTime: () ==> nat1
+		getDurationTime() == return durationTime
+		pre durationTime > 0
+		post RESULT = durationTime;
+		
+	public getAgency: () ==> Agency
+		getAgency() == return agency
+		post RESULT = agency;
+		
+	public getProject: () ==> Project
+		getProject() == return project
+		post RESULT = project;
+		
+	public getCelebrity: () ==> [Celebrity]
+		getCelebrity() == return celebrity
+		post RESULT = celebrity;
+		
+	public getTotalPrice: () ==> nat1
+		getTotalPrice() == return totalPrice
+		post RESULT = totalPrice;
+	
+	
+functions
+-- TODO Define functiones here
+traces
+-- TODO Define Combinatorial Test Traces here
+end Contract
