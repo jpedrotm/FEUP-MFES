@@ -1,5 +1,7 @@
 class Utils
 types
+	public contractRole = Contract`contractRoles;
+	public numForRole = map contractRole to nat1;
 	public String = seq of char;
 	public Date :: year: nat1
 								month: nat1
@@ -23,6 +25,7 @@ operations
 			return 30;
 	)
 functions
+
 -- TODO Define functiones here
 traces
 -- TODO Define Combinatorial Test Traces here
