@@ -12,15 +12,17 @@ instance variables
 	private celebrity: [Celebrity] := nil;
 	private totalPrice: nat1;
 operations
-	public Contract(durationT: nat1,sDate: Utils`Date, a: Agency, p: Project,c: Celebrity,price: nat1) res: Contract == (
-		durationTime := durationT;
-		agency := a;
-		project := p;
-		celebrity := c;
-		totalPrice := price;
-		startDate := sDate;
-	)
-	post res.durationTime = durationTime and res.agency = agency and res.project = project and res.celebrity = celebrity and res.totalPrice = price;
+	public Contract: nat1*Agency*Project*Celebrity*nat1*Utils`Date ==> Contract
+			Contract(durationT,a,p,c,price,sDate) == (
+			durationTime := durationT;
+			agency := a;
+			project := p;
+			celebrity := c;
+			totalPrice := price;
+			startDate := sDate;
+			return self)
+			post durationTime = durationT and agency = a and project = p and celebrity = c and totalPrice = price and startDate = sDate;
+	
 	
 	public getDurationTime: () ==> nat1
 		getDurationTime() == return durationTime

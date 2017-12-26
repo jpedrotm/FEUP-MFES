@@ -27,7 +27,7 @@ class Celebrity
 			post name = n and type = celebsTypes and minPrice = minP and maxTime = maxT and roles = rs and contracts = [] and maxContracts = maxC; --ver melhor isto
 		
 		
-		public Celebrity: () ==> Celebrity
+		public Celebrity: () ==> Celebrity --apenas para testes
 			Celebrity() == (roles := {<speaker>,<ambassador>}; return self);
 		
 		public getName: () ==> Utils`String
