@@ -4,7 +4,7 @@ types
 	public Date :: year: nat1
 								month: nat1
 								day: nat1
-								inv mk_Date(y,m,d) == m <= 12 and d <= DaysOfMonth(y,m); --função para verificar os dias de acordo com o mês
+								inv mk_Date(y,m,d) == m <= 12 and d <= DaysOfMonth(y,m); --funï¿½ï¿½o para verificar os dias de acordo com o mï¿½s
 values
 -- TODO Define values here
 instance variables

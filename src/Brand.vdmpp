@@ -1,24 +1,24 @@
 class Brand
 types
-	public String = seq of char;
+-- TODO Define types here
 
 values
 -- TODO Define values here
 
 instance variables
-	private name: String;
+	private name: Utils`String;
 	private projects: seq of Project;
 	
 operations
 -- TODO Define operations here
-	public Brand(n: String) res: Brand == 
+	public Brand(n: Utils`String) res: Brand == 
 		(
 			name := n;
 			projects := [];
 		)
 		post res.name = name and res.projects = projects;
 	
-	public getName: () ==> String
+	public getName: () ==> Utils`String
 		getName() == return name
 		post RESULT = name;
 		
