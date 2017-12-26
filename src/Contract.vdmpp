@@ -5,33 +5,33 @@ types
 	public Date :: year: nat1
 								month: nat1
 								day: nat1
-								inv mk_Date(y,m,d) == m <= 12 and d <= Utils`DaysOfMonth(m); --função para verificar os dias de acordo com o mês
+								inv mk_Date(y,m,d) == m <= 12 and d <= Utils`DaysOfMonth(m); --funï¿½ï¿½o para verificar os dias de acordo com o mï¿½s
 values
 	-- TODO Define values here
 instance variables
 	private durationTime: nat1;
-	private agency: Agency;
+	private brand: Brand;
 	private project: Project;
 	private celebrity: [Celebrity] := nil;
 	private totalPrice: nat1;
 operations
-	public Contract(durationT: nat1,a: Agency, p: Project,c: Celebrity,price: nat1) res: Contract == (
+	public Contract(durationT: nat1,b: Brand, p: Project,c: Celebrity,price: nat1) res: Contract == (
 		durationTime := durationT;
-		agency := a;
+		brand := b;
 		project := p;
 		celebrity := c;
 		totalPrice := price;
 	)
-	post res.durationTime = durationTime and res.agency = agency and res.project = project and res.celebrity = celebrity and res.totalPrice = price;
+	post res.durationTime = durationTime and res.brand = brand and res.project = project and res.celebrity = celebrity and res.totalPrice = price;
 	
 	public getDurationTime: () ==> nat1
 		getDurationTime() == return durationTime
 		pre durationTime > 0
 		post RESULT = durationTime;
 		
-	public getAgency: () ==> Agency
-		getAgency() == return agency
-		post RESULT = agency;
+	public getBrand: () ==> Brand
+		getBrand() == return brand
+		post RESULT = brand;
 		
 	public getProject: () ==> Project
 		getProject() == return project
