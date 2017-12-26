@@ -6,23 +6,29 @@ class Celebrity
 	-- TODO Define values here
 	instance variables
 		private name: Utils`String;
-		private type: set of celebrityType; -- Aqui coloquei sequência porque penso que uma celebridade pode vários tipos (sport,actor,comediant,...)
-		private minPrice: nat;
+		private type: set of celebrityType; -- Aqui coloquei um set porque penso que uma celebridade pode vários tipos (sport,actor,comediant,...)
+		private minPrice: nat1;
 		private maxTime: nat1;
 		private roles: set of Contract`contractRoles;
 		private contracts: seq of Contract := [];
-		private maxContracts: nat1 := 1;
-	operations	
-		public Celebrity(n: Utils`String, celebsTypes: set of celebrityType, minP: nat,
-		 maxT: nat1, rs: set of Contract`contractRoles, maxC: nat1) res: Celebrity == (
-		 		name := n;
+		private maxContracts: nat1 := 4; -- default
+		inv len contracts <= maxContracts; -- verificar se este invariante é preciso
+	operations
+		public Celebrity: Utils`String*set of celebrityType*nat1*nat1*set of Contract`contractRoles*nat1 ==> Celebrity
+			Celebrity(n,celebsTypes,minP,maxT,rs,maxC) == (
+				name := n;
 		 		type := celebsTypes;
 		 		minPrice := minP;
 		 		maxTime := maxT;
 		 		roles := rs;
 		 		maxContracts := maxC;
-		)
-		post res.name = name and res.type = type and res.minPrice = minPrice and res.maxTime = maxTime and res.roles = roles and res.maxContracts = maxC; --ver melhor isto
+		 		return self
+			)
+			post name = n and type = celebsTypes and minPrice = minP and maxTime = maxT and roles = rs and contracts = [] and maxContracts = maxC; --ver melhor isto
+		
+		
+		public Celebrity: () ==> Celebrity --apenas para testes
+			Celebrity() == (roles := {<speaker>,<ambassador>}; return self);
 		
 		public getName: () ==> Utils`String
 			getName() == return name
@@ -56,10 +62,25 @@ class Celebrity
 		public addContract: Contract ==> ()
 			addContract(c) == contracts := contracts ^ [c]
 			pre len contracts < maxContracts and c not in set elems contracts
-			post contracts = contracts~ ^ [c];
+			post contracts = contracts~ ^ [c]; -- ver situação de remover contractos depois
 			
+		public checkIfContractIsGood: Contract ==> bool
+			checkIfContractIsGood(c) == (
+				if(c.getDurationTime() <= maxTime and minPrice >= c.getTotalPrice() and maxContracts <= len contracts) then
+					return true
+				else return false;
+			)
+			pre c not in set elems contracts; --não sei se preciso de post mas acho que não faz sentido
 	functions
-	-- TODO Define functiones here
+		allRolesDifferent: set of Contract`contractRoles -> bool
+			allRolesDifferent(rls) == (
+			forall r in set rls & card (rls \ {r}) = (card rls) - 1
+			); -- não estão a ser usadas porque não são precisas mas ficam como exemplo caso seja preciso para já
+	
+		allTypeDifferent: set of celebrityType -> bool
+			allTypeDifferent(tps) == (
+			forall t in set tps & card (tps \ {t}) = (card tps) - 1
+			); -- não estão a ser usadas porque não são precisas mas ficam como exemplo caso seja preciso para já
 	traces
 	-- TODO Define Combinatorial Test Traces here
 end Celebrity
