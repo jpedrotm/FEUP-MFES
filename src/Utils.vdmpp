@@ -1,17 +1,24 @@
 class Utils
 types
--- TODO Define types here
+	public String = seq of char;
+	public Date :: year: nat1
+								month: nat1
+								day: nat1
+								inv mk_Date(y,m,d) == m <= 12 and d <= DaysOfMonth(y,m); --função para verificar os dias de acordo com o mês
 values
 -- TODO Define values here
 instance variables
 -- TODO Define instance variables here
 operations
-	public static pure DaysOfMonth: nat1 ==> nat1
-	 DaysOfMonth(month) == (
+	public static pure DaysOfMonth: nat1*nat1 ==> nat1
+	 DaysOfMonth(year,month) == (
 		if month = 1 or month = 3 or month = 5 or month = 7 or month = 8 or month = 10 or month = 12 then
 			return 31
 		else if month = 2 then
-			return 28
+			if (year mod 4 = 0 and year mod 100 <> 0) or (year mod 400 = 4) then
+				return 29
+			else
+				return 28
 		else
 			return 30;
 	)

@@ -2,25 +2,23 @@ class Contract
 types
 	public contractRoles = <ambassador> | <speaker> | <entertainer> | <eventSponsor>
 												| <digitalInfluence> | <productPlacement>;
-	public Date :: year: nat1
-								month: nat1
-								day: nat1
-								inv mk_Date(y,m,d) == m <= 12 and d <= Utils`DaysOfMonth(m); --função para verificar os dias de acordo com o mês
 values
 	-- TODO Define values here
 instance variables
 	private durationTime: nat1;
+	private startDate: Utils`Date;
 	private agency: Agency;
 	private project: Project;
 	private celebrity: [Celebrity] := nil;
 	private totalPrice: nat1;
 operations
-	public Contract(durationT: nat1,a: Agency, p: Project,c: Celebrity,price: nat1) res: Contract == (
+	public Contract(durationT: nat1,sDate: Utils`Date, a: Agency, p: Project,c: Celebrity,price: nat1) res: Contract == (
 		durationTime := durationT;
 		agency := a;
 		project := p;
 		celebrity := c;
 		totalPrice := price;
+		startDate := sDate;
 	)
 	post res.durationTime = durationTime and res.agency = agency and res.project = project and res.celebrity = celebrity and res.totalPrice = price;
 	

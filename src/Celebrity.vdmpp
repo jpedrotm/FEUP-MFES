@@ -1,21 +1,20 @@
 class Celebrity
 	types
-		public String = seq of char;
 		public celebrityType = <sport> | <actor> | <comediant> | <tecnology> |
 													<music> | <cook> | <magic>;
 	values
 	-- TODO Define values here
 	instance variables
-		private name: String;
-		private type: seq of celebrityType; -- Aqui coloquei sequência porque penso que uma celebridade pode vários tipos (sport,actor,comediant,...)
+		private name: Utils`String;
+		private type: set of celebrityType; -- Aqui coloquei sequência porque penso que uma celebridade pode vários tipos (sport,actor,comediant,...)
 		private minPrice: nat;
 		private maxTime: nat1;
-		private roles: seq of Contract`contractRoles;
+		private roles: set of Contract`contractRoles;
 		private contracts: seq of Contract := [];
 		private maxContracts: nat1 := 1;
 	operations	
-		public Celebrity(n: String, celebsTypes: seq of celebrityType, minP: nat,
-		 maxT: nat1, rs: seq of Contract`contractRoles, maxC: nat1) res: Celebrity == (
+		public Celebrity(n: Utils`String, celebsTypes: set of celebrityType, minP: nat,
+		 maxT: nat1, rs: set of Contract`contractRoles, maxC: nat1) res: Celebrity == (
 		 		name := n;
 		 		type := celebsTypes;
 		 		minPrice := minP;
@@ -25,19 +24,19 @@ class Celebrity
 		)
 		post res.name = name and res.type = type and res.minPrice = minPrice and res.maxTime = maxTime and res.roles = roles and res.maxContracts = maxC; --ver melhor isto
 		
-		public getName: () ==> String
+		public getName: () ==> Utils`String
 			getName() == return name
 			pre name <> ""
 			post RESULT = name;
 			
-		public getType: () ==> seq of celebrityType
+		public getType: () ==> set of celebrityType
 			getType() == return type
-			pre type <> []
+			pre type <> {}
 			post RESULT = type;
 			
 		public getMinPrice: () ==> nat
 			getMinPrice() == return minPrice
-			pre minPrice >= 0 --ver melhor pre e pos
+			pre minPrice >= 0
 			post RESULT = minPrice;
 			
 		public getMaxTime: () ==> nat
@@ -45,14 +44,19 @@ class Celebrity
 			pre maxTime > 0
 			post RESULT = maxTime;
 			
-		public getRoles: () ==> seq of Contract`contractRoles
+		public getRoles: () ==> set of Contract`contractRoles
 			getRoles() == return roles
-			pre roles <> []
+			pre roles <> {}
 			post RESULT = roles;
 			
 		public getContracts: () ==> seq of Contract
 			getContracts() == return contracts
-			post RESULT = contracts; --não tem pre para ja
+			post RESULT = contracts;
+			
+		public addContract: Contract ==> ()
+			addContract(c) == contracts := contracts ^ [c]
+			pre len contracts < maxContracts and c not in set elems contracts
+			post contracts = contracts~ ^ [c];
 			
 	functions
 	-- TODO Define functiones here
