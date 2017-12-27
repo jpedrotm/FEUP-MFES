@@ -88,9 +88,6 @@ operations
 		getBudgetedRoles() == return dom maxPricePerRole;
 
 	-- ----- Budget End---------------------------------------------------
-
-		
-		
 		
 -- TODO Define operations here
 functions

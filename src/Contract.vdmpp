@@ -49,7 +49,7 @@ operations
 functions
 	projectExistsInBrand: Brand*Project -> bool
 			projectExistsInBrand(brnd,proj) == (
-				proj in set elems brnd.projects
+				proj in set brnd.projects
 			);
 traces
 -- TODO Define Combinatorial Test Traces here

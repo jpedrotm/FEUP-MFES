@@ -1,0 +1,49 @@
+class Platform
+types
+-- TODO Define types here
+values
+-- TODO Define values here
+instance variables
+	private brands: set of Brand;
+	private celebs: set of Celebrity;
+-- TODO Define instance variables here
+operations
+	public Platform: () ==> Platform
+		Platform() == 
+		(
+			brands := {};
+			celebs := {};
+			return self;
+		)
+		post brands = {} and celebs = {};
+		
+	public getBrands: () ==> set of Brand
+		getBrands() == return brands;
+		
+	public getCelebs: () ==> set of Celebrity
+		getCelebs() == return celebs;
+		
+	public addBrand: Brand ==> set of Brand
+		addBrand(brand) == 
+		(
+			brands := brands union {brand};
+			return brands;
+		)
+		pre brand not in set brands
+		post brand in set brands;
+		
+	public addCeleb: Celebrity ==> set of Celebrity
+		addCeleb(celeb) ==
+		(
+			celebs := celebs union {celeb};
+			return celebs;
+		)
+		pre celeb not in set celebs
+		post celeb in set celebs;
+		
+-- TODO Define operations here
+functions
+-- TODO Define functiones here
+traces
+-- TODO Define Combinatorial Test Traces here
+end Platform
