@@ -2,36 +2,37 @@ class Contract
 types
 	public contractRoles = <ambassador> | <speaker> | <entertainer> | <eventSponsor>
 												| <digitalInfluence> | <productPlacement>;
+												
 values
 	-- TODO Define values here
 instance variables
 	private durationTime: nat1;
 	private startDate: Utils`Date;
-	private agency: Agency;
+	private brand: Brand;
 	private project: Project;
 	private celebrity: [Celebrity] := nil;
 	private totalPrice: nat1;
 operations
-	public Contract: nat1*Agency*Project*Celebrity*nat1*Utils`Date ==> Contract
-			Contract(durationT,a,p,c,price,sDate) == (
+	public Contract: nat1*Brand*Project*Celebrity*nat1*Utils`Date ==> Contract
+			Contract(durationT,b,p,c,price,sDate) == (
 			durationTime := durationT;
-			agency := a;
+			brand := b;
 			project := p;
 			celebrity := c;
 			totalPrice := price;
 			startDate := sDate;
 			return self)
-			post durationTime = durationT and agency = a and project = p and celebrity = c and totalPrice = price and startDate = sDate;
-	
+			post durationTime = durationT and brand = b and project = p and celebrity = c and totalPrice = price and startDate = sDate;
+
 	
 	public getDurationTime: () ==> nat1
 		getDurationTime() == return durationTime
 		pre durationTime > 0
 		post RESULT = durationTime;
 		
-	public getAgency: () ==> Agency
-		getAgency() == return agency
-		post RESULT = agency;
+	public getBrand: () ==> Brand
+		getBrand() == return brand
+		post RESULT = brand;
 		
 	public getProject: () ==> Project
 		getProject() == return project

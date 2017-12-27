@@ -1,11 +1,47 @@
 class Project
 types
 -- TODO Define types here
+	public contractRole = Contract`contractRoles;
+	public numForRole = map contractRole to nat1;
+	
 values
 -- TODO Define values here
 instance variables
+	private name: Utils`String;
+	private contracts: seq of Contract;
+	private maxNumContracts: nat1;
+	private desiredNumPerRole: numForRole;
+	inv len contracts <= maxNumContracts; -- the project does not have more contracts than desired
 -- TODO Define instance variables here
 operations
+	public Project: Utils`String*nat1*numForRole ==> Project
+		Project(n,m,d) == 
+		(
+			name := n;
+			contracts := [];
+			maxNumContracts := m;
+			desiredNumPerRole := d;
+			return self;
+		)
+		pre d <> {|->}
+		post name = n and contracts = [] and maxNumContracts = m and desiredNumPerRole = d;
+		
+	public getDesiredNumPerRole: () ==> numForRole
+		getDesiredNumPerRole() == return desiredNumPerRole;
+		
+	public getDesiredNumForRole: contractRole ==> nat
+		getDesiredNumForRole(role) ==
+		(
+			if role not in set dom desiredNumPerRole
+			then return 0
+			else return desiredNumPerRole(role);
+		)
+		post RESULT >= 0;
+		
+	public getDesiredRoles: () ==> set of contractRole
+		getDesiredRoles() == return dom desiredNumPerRole;
+		
+		
 -- TODO Define operations here
 functions
 -- TODO Define functiones here

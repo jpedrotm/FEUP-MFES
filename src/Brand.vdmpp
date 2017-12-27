@@ -1,0 +1,37 @@
+class Brand
+types
+-- TODO Define types here
+
+values
+-- TODO Define values here
+
+instance variables
+	private name: Utils`String;
+	private projects: seq of Project;
+	
+operations
+-- TODO Define operations here
+	public Brand(n: Utils`String) res: Brand == 
+		(
+			name := n;
+			projects := [];
+		)
+		post res.name = name and res.projects = projects;
+	
+	public getName: () ==> Utils`String
+		getName() == return name
+		post RESULT = name;
+		
+	public getProjects: () ==> seq of Project
+		getProjects() == return projects
+		post RESULT = projects;
+		
+	public getNumProjects: () ==> int
+		getNumProjects() == return len projects
+		post RESULT = len projects
+	
+functions
+-- TODO Define functiones here
+traces
+-- TODO Define Combinatorial Test Traces here
+end Brand
