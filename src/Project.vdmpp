@@ -13,6 +13,8 @@ instance variables
 	private maxNumContracts: nat1;
 	private desiredNumPerRole: numForRole;
 	private maxPricePerRole: budgetPerRole;
+	private desiredCelebTypes: set of Celebrity`celebrityType;
+	private duration: nat1;
 	inv len contracts <= maxNumContracts; -- the project does not have more contracts than desired
 	inv getTotalNumDesiredRoles() <= maxNumContracts;
 	inv getTotalNumBudgetedRoles() <= maxNumContracts;
@@ -21,18 +23,20 @@ instance variables
 
 -- TODO Define instance variables here
 operations
-	public Project: Utils`String*nat1*numForRole*budgetPerRole ==> Project
-		Project(n,m,d,b) == 
+	public Project: Utils`String*nat1*numForRole*budgetPerRole*set of Celebrity`celebrityType*nat1 ==> Project
+		Project(n,m,d,b,ct,t) == 
 		(
 			name := n;
 			contracts := [];
 			maxNumContracts := m;
 			desiredNumPerRole := d;
 			maxPricePerRole := b;
+			desiredCelebTypes := ct;
+			duration := t;
 			return self;
 		)
-		pre d <> {|->} and b <> {|->}
-		post name = n and contracts = [] and maxNumContracts = m and desiredNumPerRole = d and maxPricePerRole = b;
+		pre d <> {|->} and b <> {|->} and ct <> {} -- The project must specify desired roles, budget for those roles, and desired celebrity types
+		post name = n and contracts = [] and maxNumContracts = m and desiredNumPerRole = d and maxPricePerRole = b and desiredCelebTypes = ct and duration = t;
 		
 	-- ----- Desired Roles ----------------------------------------------
 	public getDesiredNumPerRole: () ==> numForRole
@@ -66,6 +70,13 @@ operations
 	public getDesiredRoles: () ==> set of contractRole
 		getDesiredRoles() == return dom desiredNumPerRole;
 	-- ----- Desired Roles End -------------------------------------------
+	
+	-- ----- Desired Types -----------------------------------------------
+	
+	public getDesiredCelebTypes: () ==> set of Celebrity`celebrityType
+		getDesiredCelebTypes() == return desiredCelebTypes;	
+		
+		-- ----- Desired Types End -------------------------------------------
 		
 	-- ----- Budget ------------------------------------------------------
 	public getMaxPriceForRole: contractRole ==> nat
@@ -89,6 +100,14 @@ operations
 
 	-- ----- Budget End---------------------------------------------------
 		
+	-- ----- Search celebrity --------------------------------------------
+	public getAppropriateCelebs: set of Celebrity ==> set of Celebrity
+	getAppropriateCelebs(celebs) ==
+	(
+		return {celeb | celeb in set celebs & (celeb.getRoles() inter getDesiredRoles() <> {} and celeb.getType() inter getDesiredCelebTypes() <> {})};
+	)
+	
+	
 -- TODO Define operations here
 functions
 -- TODO Define functiones here

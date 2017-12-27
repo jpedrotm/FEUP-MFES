@@ -1,18 +1,18 @@
 class Celebrity
 	types
-		public celebrityType = <sport> | <actor> | <comediant> | <tecnology> |
+		public celebrityType = <sport> | <actor> | <comedian> | <tech> |
 													<music> | <cook> | <magic>;
 	values
 	-- TODO Define values here
 	instance variables
 		private name: Utils`String;
-		private type: set of celebrityType; -- Aqui coloquei um set porque penso que uma celebridade pode vários tipos (sport,actor,comediant,...)
+		private type: set of celebrityType; -- Aqui coloquei um set porque penso que uma celebridade pode vï¿½rios tipos (sport,actor,comediant,...)
 		private minPrice: nat1;
 		private maxTime: nat1;
 		private roles: set of Contract`contractRoles;
 		private contracts: seq of Contract := [];
 		private maxContracts: nat1 := 4; -- default
-		inv len contracts <= maxContracts; -- verificar se este invariante é preciso
+		inv len contracts <= maxContracts; -- verificar se este invariante ï¿½ preciso
 	operations
 		public Celebrity: Utils`String*set of celebrityType*nat1*nat1*set of Contract`contractRoles*nat1 ==> Celebrity
 			Celebrity(n,celebsTypes,minP,maxT,rs,maxC) == (
@@ -63,7 +63,7 @@ class Celebrity
 		public addContract: Contract ==> ()
 			addContract(c) == contracts := contracts ^ [c]
 			pre len contracts < maxContracts and c not in set elems contracts
-			post contracts = contracts~ ^ [c]; -- ver situação de remover contractos depois
+			post contracts = contracts~ ^ [c]; -- ver situaï¿½ï¿½o de remover contractos depois
 			
 		public removeContract: Contract ==> ()
 			removeContract(c) == (
@@ -89,12 +89,12 @@ class Celebrity
 		allRolesDifferent: set of Contract`contractRoles -> bool
 			allRolesDifferent(rls) == (
 			forall r in set rls & card (rls \ {r}) = (card rls) - 1
-			); -- não estão a ser usadas porque não são precisas mas ficam como exemplo caso seja preciso para já
+			); -- nï¿½o estï¿½o a ser usadas porque nï¿½o sï¿½o precisas mas ficam como exemplo caso seja preciso para jï¿½
 	
 		allTypeDifferent: set of celebrityType -> bool
 			allTypeDifferent(tps) == (
 			forall t in set tps & card (tps \ {t}) = (card tps) - 1
-			); -- não estão a ser usadas porque não são precisas mas ficam como exemplo caso seja preciso para já
+			); -- nï¿½o estï¿½o a ser usadas porque nï¿½o sï¿½o precisas mas ficam como exemplo caso seja preciso para jï¿½
 	traces
 	-- TODO Define Combinatorial Test Traces here
 end Celebrity
