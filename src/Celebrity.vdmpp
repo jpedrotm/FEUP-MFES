@@ -61,22 +61,41 @@ class Celebrity
 			post RESULT = contracts;
 			
 		public addContract: Contract ==> ()
-			addContract(c) == contracts := contracts ^ [c]
+			addContract(c) == (
+				contracts := contracts ^ [c];
+				contracts := Mergesort`sortContracts(contracts);
+			)
 			pre len contracts < maxContracts and c not in set elems contracts
-			post contracts = contracts~ ^ [c]; -- ver situação de remover contractos depois
+			post contracts = Mergesort`sortContracts(contracts); -- talvez mude depois
 			
 		public removeContract: Contract ==> ()
 			removeContract(c) == (
 				dcl tmpContracts: seq of Contract := contracts;
 				while len contracts > 0 do
+				(
 					if hd contracts <> c then
 						tmpContracts := tmpContracts ^ [hd contracts];
 					contracts := tl contracts;
+				);
 					
 				contracts := tmpContracts;
 			)
 			pre contracts <> []
 			post c not in set elems contracts and len contracts = (len contracts~) - 1;
+			
+		public static removeNat: seq of nat*nat ==> seq of nat -- exemplo ciclo
+			removeNat(array1,n) == (
+				dcl array: seq of nat := array1;
+				dcl tmpArray: seq of nat := [];
+				while (len array) > 0 do
+				(
+					if hd array <> n then
+						tmpArray := tmpArray ^ [hd array];
+					array := tl array;
+				);
+						
+				return tmpArray;
+			);
 			
 		public checkIfContractIsGood: Contract ==> bool
 			checkIfContractIsGood(c) == (
