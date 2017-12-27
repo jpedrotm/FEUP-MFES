@@ -1,12 +1,10 @@
 class Utils
 types
-	public contractRole = Contract`contractRoles;
-	public numForRole = map contractRole to nat1;
 	public String = seq of char;
 	public Date :: year: nat1
 								month: nat1
 								day: nat1
-								inv mk_Date(y,m,d) == m <= 12 and d <= DaysOfMonth(y,m); --fun��o para verificar os dias de acordo com o m�s
+								inv mk_Date(y,m,d) == m <= 12 and d <= DaysOfMonth(y,m); --funcao para verificar os dias de acordo com o mes
 values
 -- TODO Define values here
 instance variables

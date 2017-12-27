@@ -18,6 +18,7 @@ instance variables
 	inv getTotalNumBudgetedRoles() <= maxNumContracts;
 	inv dom desiredNumPerRole = dom maxPricePerRole;
 	
+
 -- TODO Define instance variables here
 operations
 	public Project: Utils`String*nat1*numForRole*budgetPerRole ==> Project

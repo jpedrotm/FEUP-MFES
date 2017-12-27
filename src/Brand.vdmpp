@@ -7,7 +7,7 @@ values
 
 instance variables
 	private name: Utils`String;
-	private projects: seq of Project;
+	public projects: seq of Project;
 	
 operations
 -- TODO Define operations here
@@ -28,8 +28,11 @@ operations
 		
 	public getNumProjects: () ==> int
 		getNumProjects() == return len projects
-		post RESULT = len projects
+		post RESULT = len projects;
 	
+	public addProject: Project ==> ()
+		addProject(p) == projects := projects ^ [p]
+		post projects = projects~ ^ [p];
 functions
 -- TODO Define functiones here
 traces
