@@ -24,7 +24,6 @@ operations
 			startDate := sDate;
 			return self)
 			post durationTime = durationT and brand = b and project = p and celebrity = c and totalPrice = price and startDate = sDate;
-
 	
 	public getDurationTime: () ==> nat1
 		getDurationTime() == return durationTime
