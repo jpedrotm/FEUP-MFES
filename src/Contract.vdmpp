@@ -12,6 +12,7 @@ instance variables
 	private project: Project;
 	private celebrity: [Celebrity] := nil;
 	private totalPrice: nat1;
+	inv projectExistsInBrand(brand,project);
 operations
 	public Contract: nat1*Brand*Project*Celebrity*nat1*Utils`Date ==> Contract
 			Contract(durationT,b,p,c,price,sDate) == (
@@ -45,10 +46,11 @@ operations
 	public getTotalPrice: () ==> nat1
 		getTotalPrice() == return totalPrice
 		post RESULT = totalPrice;
-	
-	
 functions
--- TODO Define functiones here
+	projectExistsInBrand: Brand*Project -> bool
+			projectExistsInBrand(brnd,proj) == (
+				proj in set elems brnd.projects
+			);
 traces
 -- TODO Define Combinatorial Test Traces here
 end Contract

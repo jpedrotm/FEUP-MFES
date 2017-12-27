@@ -12,7 +12,6 @@ instance variables
 	private maxNumContracts: nat1;
 	private desiredNumPerRole: numForRole;
 	inv len contracts <= maxNumContracts; -- the project does not have more contracts than desired
-	
 -- TODO Define instance variables here
 operations
 	public Project: Utils`String*nat1*numForRole ==> Project
