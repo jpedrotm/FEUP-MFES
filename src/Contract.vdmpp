@@ -8,11 +8,12 @@ values
 instance variables
 	private durationTime: nat1;
 	private startDate: Utils`Date;
+	private finalDate: Utils`Date;
 	private brand: Brand;
 	private project: Project;
 	private celebrity: [Celebrity] := nil;
 	private totalPrice: nat1;
-	inv projectExistsInBrand(brand,project);
+	--inv projectExistsInBrand(brand,project); Para descomentar depois
 operations
 	public Contract: nat1*Brand*Project*Celebrity*nat1*Utils`Date ==> Contract
 			Contract(durationT,b,p,c,price,sDate) == (
@@ -22,8 +23,17 @@ operations
 			celebrity := c;
 			totalPrice := price;
 			startDate := sDate;
+			finalDate := Utils`calculateFinalDate(startDate,durationTime);
 			return self)
 			post durationTime = durationT and brand = b and project = p and celebrity = c and totalPrice = price and startDate = sDate;
+			
+		public Contract: nat1 ==> Contract
+			Contract(d) == (
+				durationTime := d;
+				startDate := mk_Utils`Date(2016,1,1);
+				finalDate := Utils`calculateFinalDate(startDate,durationTime);
+				return self;
+			);
 	
 	public getDurationTime: () ==> nat1
 		getDurationTime() == return durationTime
@@ -45,6 +55,14 @@ operations
 	public getTotalPrice: () ==> nat1
 		getTotalPrice() == return totalPrice
 		post RESULT = totalPrice;
+		
+	public pure getStartDate: () ==> Utils`Date
+		getStartDate() == return startDate
+		post RESULT = startDate;
+		
+	public pure getFinalDate: () ==> Utils`Date
+		getFinalDate() == return finalDate
+		post RESULT = finalDate;
 functions
 	projectExistsInBrand: Brand*Project -> bool
 			projectExistsInBrand(brnd,proj) == (

@@ -61,9 +61,12 @@ class Celebrity
 			post RESULT = contracts;
 			
 		public addContract: Contract ==> ()
-			addContract(c) == contracts := contracts ^ [c]
+			addContract(c) == (
+				contracts := contracts ^ [c];
+				contracts := Mergesort`sortContracts(contracts);
+			)
 			pre len contracts < maxContracts and c not in set elems contracts
-			post contracts = contracts~ ^ [c]; -- ver situação de remover contractos depois
+			post contracts = Mergesort`sortContracts(contracts); -- talvez mude depois
 			
 		public removeContract: Contract ==> ()
 			removeContract(c) == (
