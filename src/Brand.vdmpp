@@ -7,14 +7,14 @@ values
 
 instance variables
 	private name: Utils`String;
-	public projects: seq of Project;
+	public projects: set of Project;
 	
 operations
 -- TODO Define operations here
 	public Brand(n: Utils`String) res: Brand == 
 		(
 			name := n;
-			projects := [];
+			projects := {};
 		)
 		post res.name = name and res.projects = projects;
 	
@@ -22,17 +22,19 @@ operations
 		getName() == return name
 		post RESULT = name;
 		
-	public getProjects: () ==> seq of Project
+	public getProjects: () ==> set of Project
 		getProjects() == return projects
 		post RESULT = projects;
 		
 	public getNumProjects: () ==> int
-		getNumProjects() == return len projects
-		post RESULT = len projects;
+		getNumProjects() == return card projects
+		post RESULT = card  projects;
 	
 	public addProject: Project ==> ()
-		addProject(p) == projects := projects ^ [p]
-		post projects = projects~ ^ [p];
+		addProject(p) == projects := projects union {p}
+		pre p not in set projects
+		post p in set projects;
+
 functions
 -- TODO Define functiones here
 traces
