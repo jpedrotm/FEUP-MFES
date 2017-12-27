@@ -24,6 +24,7 @@ class Celebrity
 		 		maxContracts := maxC;
 		 		return self
 			)
+			pre celebsTypes <> {} and rs <> {}
 			post name = n and type = celebsTypes and minPrice = minP and maxTime = maxT and roles = rs and contracts = [] and maxContracts = maxC; --ver melhor isto
 		
 		
@@ -64,13 +65,26 @@ class Celebrity
 			pre len contracts < maxContracts and c not in set elems contracts
 			post contracts = contracts~ ^ [c]; -- ver situação de remover contractos depois
 			
+		public removeContract: Contract ==> ()
+			removeContract(c) == (
+				dcl tmpContracts: seq of Contract := contracts;
+				while len contracts > 0 do
+					if hd contracts <> c then
+						tmpContracts := tmpContracts ^ [hd contracts];
+					contracts := tl contracts;
+					
+				contracts := tmpContracts;
+			)
+			pre contracts <> []
+			post c not in set elems contracts and len contracts = (len contracts~) - 1;
+			
 		public checkIfContractIsGood: Contract ==> bool
 			checkIfContractIsGood(c) == (
 				if(c.getDurationTime() <= maxTime and minPrice >= c.getTotalPrice() and maxContracts <= len contracts) then
 					return true
 				else return false;
 			)
-			pre c not in set elems contracts; --não sei se preciso de post mas acho que não faz sentido
+			pre c not in set elems contracts;
 	functions
 		allRolesDifferent: set of Contract`contractRoles -> bool
 			allRolesDifferent(rls) == (

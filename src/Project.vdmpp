@@ -38,6 +38,22 @@ operations
 		)
 		post RESULT >= 0;
 		
+	public  getTotalNumDesiredRoles: () ==> nat
+		getTotalNumDesiredRoles() == return getSumDesiredRoles(dom desiredNumPerRole, desiredNumPerRole)
+		post RESULT >= 0;
+		
+	-- auxiliary function that returns the sum of all the keys in a map
+	public  getSumDesiredRoles: set of contractRole*numForRole ==> nat
+		getSumDesiredRoles(roles, numRoleMap) == 
+		(
+			if roles = {}
+			then return 0
+			else return let role in set roles
+				in 
+					numRoleMap(role) + getSumDesiredRoles(roles \ {role}, numRoleMap)
+		)
+		post RESULT >= 0;
+		
 	public getDesiredRoles: () ==> set of contractRole
 		getDesiredRoles() == return dom desiredNumPerRole;
 		
