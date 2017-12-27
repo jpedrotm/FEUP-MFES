@@ -3,6 +3,7 @@ types
 -- TODO Define types here
 	public contractRole = Contract`contractRoles;
 	public numForRole = map contractRole to nat1;
+	public budgetPerRole = map contractRole to nat1;
 	
 values
 -- TODO Define values here
@@ -11,22 +12,28 @@ instance variables
 	private contracts: seq of Contract;
 	private maxNumContracts: nat1;
 	private desiredNumPerRole: numForRole;
+	private maxPricePerRole: budgetPerRole;
 	inv len contracts <= maxNumContracts; -- the project does not have more contracts than desired
+	inv getTotalNumDesiredRoles() <= maxNumContracts;
+	inv getTotalNumBudgetedRoles() <= maxNumContracts;
+	inv dom desiredNumPerRole = dom maxPricePerRole;
 	
 -- TODO Define instance variables here
 operations
-	public Project: Utils`String*nat1*numForRole ==> Project
-		Project(n,m,d) == 
+	public Project: Utils`String*nat1*numForRole*budgetPerRole ==> Project
+		Project(n,m,d,b) == 
 		(
 			name := n;
 			contracts := [];
 			maxNumContracts := m;
 			desiredNumPerRole := d;
+			maxPricePerRole := b;
 			return self;
 		)
-		pre d <> {|->}
-		post name = n and contracts = [] and maxNumContracts = m and desiredNumPerRole = d;
+		pre d <> {|->} and b <> {|->}
+		post name = n and contracts = [] and maxNumContracts = m and desiredNumPerRole = d and maxPricePerRole = b;
 		
+	-- ----- Desired Roles ----------------------------------------------
 	public getDesiredNumPerRole: () ==> numForRole
 		getDesiredNumPerRole() == return desiredNumPerRole;
 		
@@ -39,12 +46,12 @@ operations
 		)
 		post RESULT >= 0;
 		
-	public  getTotalNumDesiredRoles: () ==> nat
+	public pure getTotalNumDesiredRoles: () ==> nat
 		getTotalNumDesiredRoles() == return getSumDesiredRoles(dom desiredNumPerRole, desiredNumPerRole)
 		post RESULT >= 0;
 		
 	-- auxiliary function that returns the sum of all the keys in a map
-	public  getSumDesiredRoles: set of contractRole*numForRole ==> nat
+	public pure  getSumDesiredRoles: set of contractRole*numForRole ==> nat
 		getSumDesiredRoles(roles, numRoleMap) == 
 		(
 			if roles = {}
@@ -57,6 +64,31 @@ operations
 		
 	public getDesiredRoles: () ==> set of contractRole
 		getDesiredRoles() == return dom desiredNumPerRole;
+	-- ----- Desired Roles End -------------------------------------------
+		
+	-- ----- Budget ------------------------------------------------------
+	public getMaxPriceForRole: contractRole ==> nat
+		getMaxPriceForRole(role) ==
+		(
+			if role not in set dom maxPricePerRole
+			then return 0
+			else return maxPricePerRole(role);
+		)
+		post RESULT >= 0;
+		
+	public getBudgetPerRole: () ==> budgetPerRole
+		getBudgetPerRole() == return maxPricePerRole;
+		
+	public pure getTotalNumBudgetedRoles: () ==> nat
+		getTotalNumBudgetedRoles() == return card dom maxPricePerRole
+		post RESULT >= 0;
+		
+	public getBudgetedRoles: () ==> set of contractRole
+		getBudgetedRoles() == return dom maxPricePerRole;
+
+	-- ----- Budget End---------------------------------------------------
+
+		
 		
 		
 -- TODO Define operations here
