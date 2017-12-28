@@ -6,7 +6,7 @@ values
 instance variables
 	private brands: set of Brand;
 	private celebs: set of Celebrity;
-	public static currentDate: Utils`Date := mk_Utils`Date(2016,1,1);
+	public static currentDate: Globals`Date := mk_Globals`Date(2016,1,1);
 operations
 	public Platform: () ==> Platform
 		Platform() == 

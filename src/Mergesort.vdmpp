@@ -18,7 +18,7 @@ class Mergesort -- from MFES and adapted to order an array of type Contract
 			cases true:
 				(s1 = []) -> s2,
 				(s2 = []) -> s1,
-				(Utils`compareDates((hd s1).getFinalDate(),(hd s2).getFinalDate())) -> [hd s1] ^ Merge(tl s1, s2),
+				(Globals`compareDates((hd s1).getFinalDate(),(hd s2).getFinalDate())) -> [hd s1] ^ Merge(tl s1, s2),
 				others -> [hd s2] ^ Merge(s1, tl s2)
 				end
 			);

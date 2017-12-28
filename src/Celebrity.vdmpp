@@ -5,7 +5,7 @@ class Celebrity
 	values
 	-- TODO Define values here
 	instance variables
-		private name: Utils`String;
+		private name: Globals`String;
 		private type: set of celebrityType;
 		private minPrice: nat1;
 		private maxTime: nat1;
@@ -14,7 +14,7 @@ class Celebrity
 		private maxContracts: nat1 := 2;
 		inv numActiveContracts() <= maxContracts;
 	operations
-		public Celebrity: Utils`String*set of celebrityType*nat1*nat1*map Contract`contractRoles to nat1*nat1 ==> Celebrity
+		public Celebrity: Globals`String*set of celebrityType*nat1*nat1*map Contract`contractRoles to nat1*nat1 ==> Celebrity
 			Celebrity(n,celebsTypes,minP,maxT,rs,maxC) == (
 				name := n;
 		 		type := celebsTypes;
@@ -31,7 +31,7 @@ class Celebrity
 		public Celebrity: () ==> Celebrity --apenas para testes
 			Celebrity() == (roles := {<speaker> |-> 1,<ambassador> |-> 1}; return self);
 		
-		public getName: () ==> Utils`String
+		public getName: () ==> Globals`String
 			getName() == return name
 			pre name <> ""
 			post RESULT = name;
@@ -97,7 +97,7 @@ class Celebrity
 			haveSpaceForNewContract(c) == (
 				dcl numOfDifferentContractDates: nat := 0;
 				for all contract in set elems contracts do
-					if (Utils`compareDates(contract.getFinalDate(), c.getStartDate()) or Utils`compareDates(c.getFinalDate(),contract.getStartDate())) then
+					if (Globals`compareDates(contract.getFinalDate(), c.getStartDate()) or Globals`compareDates(c.getFinalDate(),contract.getStartDate())) then
 						(
 							numOfDifferentContractDates := numOfDifferentContractDates + 1;
 						);
@@ -107,8 +107,8 @@ class Celebrity
 			
 		public pure numActiveContracts: () ==> nat
 			numActiveContracts() == (
-				return card {contract | contract in set elems contracts & Utils`compareDates(contract.getStartDate(),Platform`currentDate)
-				 and Utils`compareDates(Platform`currentDate,contract.getFinalDate())}
+				return card {contract | contract in set elems contracts & Globals`compareDates(contract.getStartDate(),Platform`currentDate)
+				 and Globals`compareDates(Platform`currentDate,contract.getFinalDate())}
 			);
 	functions
 		
