@@ -101,11 +101,11 @@ operations
 	-- ----- Budget End---------------------------------------------------
 		
 	-- ----- Search celebrity --------------------------------------------
-	public getAppropriateCelebs: set of Celebrity ==> set of Celebrity
-	getAppropriateCelebs(celebs) ==
-	(
-		return {celeb | celeb in set celebs & (celeb.getRoles() inter getDesiredRoles() <> {} and celeb.getType() inter getDesiredCelebTypes() <> {})};
-	)
+	--public getAppropriateCelebs: set of Celebrity ==> set of Celebrity
+	--getAppropriateCelebs(celebs) ==
+	--(
+	--	return {celeb | celeb in set celebs & (celeb.getRoles() inter getDesiredRoles() <> {|->} and celeb.getType() inter getDesiredCelebTypes() <> {})};
+	--)
 	
 	
 -- TODO Define operations here

@@ -1,0 +1,41 @@
+class CelebrityTest
+types
+-- TODO Define types here
+values
+-- TODO Define values here
+instance variables
+	celebrity: Celebrity;
+	con1: Contract;
+	con2: Contract;
+	con3: Contract;
+	con4: Contract;
+operations
+	private testCelebrity: () ==> ()
+		testCelebrity() == (
+			celebrity := new Celebrity();
+			con1 := new Contract(1,20);
+			con2 := new Contract(1,10);
+			con3 := new Contract(1,15);
+			con4 := new Contract(14,19);
+			
+			celebrity.addContract(con1);
+			IO`print(celebrity.numActiveContracts());
+			celebrity.addContract(con2);
+			IO`print(celebrity.numActiveContracts());
+			IO`print(celebrity);
+			
+			IO`print("\n");
+			IO`print(celebrity.haveSpaceForNewContract(con3));
+			IO`print("\n");
+			IO`print(celebrity.haveSpaceForNewContract(con4));
+		);
+		
+	public static main: () ==> ()
+		main() == (
+			new CelebrityTest().testCelebrity();
+		);
+functions
+-- TODO Define functiones here
+traces
+-- TODO Define Combinatorial Test Traces here
+end CelebrityTest
