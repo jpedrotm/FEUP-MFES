@@ -7,17 +7,17 @@ values
 	-- TODO Define values here
 instance variables
 	private durationTime: nat1;
-	private startDate: Utils`Date;
-	private finalDate: Utils`Date;
+	private startDate: Globals`Date;
+	private finalDate: Globals`Date;
 	private brand: Brand;
 	private project: Project;
 	private role: contractRoles;
 	private celebrity: [Celebrity] := nil;
 	private totalPrice: nat1;
-	inv Utils`compareDates(startDate,finalDate);
+	inv Globals`compareDates(startDate,finalDate);
 	--inv projectExistsInBrand(brand,project); Para descomentar depois
 operations
-	public Contract: nat1*Brand*Project*Celebrity*nat1*Utils`Date ==> Contract
+	public Contract: nat1*Brand*Project*Celebrity*nat1*Globals`Date ==> Contract
 			Contract(durationT,b,p,c,price,sDate) == (
 			durationTime := durationT;
 			brand := b;
@@ -25,15 +25,15 @@ operations
 			celebrity := c;
 			totalPrice := price;
 			startDate := sDate;
-			finalDate := Utils`calculateFinalDate(startDate,durationTime);
+			finalDate := Globals`calculateFinalDate(startDate,durationTime);
 			return self)
 			post durationTime = durationT and brand = b and project = p and celebrity = c and totalPrice = price and startDate = sDate;
 			
 		public Contract: nat1*nat1 ==> Contract
 			Contract(d1,d2) == (
 				durationTime := d2 - d1;
-				startDate := mk_Utils`Date(2016,1,d1);
-				finalDate := mk_Utils`Date(2016,1,d2);
+				startDate := mk_Globals`Date(2016,1,d1);
+				finalDate := mk_Globals`Date(2016,1,d2);
 				role := <ambassador>;
 				return self;
 			);
@@ -59,11 +59,11 @@ operations
 		getTotalPrice() == return totalPrice
 		post RESULT = totalPrice;
 		
-	public pure getStartDate: () ==> Utils`Date
+	public pure getStartDate: () ==> Globals`Date
 		getStartDate() == return startDate
 		post RESULT = startDate;
 		
-	public pure getFinalDate: () ==> Utils`Date
+	public pure getFinalDate: () ==> Globals`Date
 		getFinalDate() == return finalDate
 		post RESULT = finalDate;
 functions

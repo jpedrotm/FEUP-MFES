@@ -8,7 +8,7 @@ types
 values
 -- TODO Define values here
 instance variables
-	private name: Utils`String;
+	private name: Globals`String;
 	private contracts: seq of Contract;
 	private maxNumContracts: nat1;
 	private desiredNumPerRole: numForRole;
@@ -23,7 +23,7 @@ instance variables
 
 -- TODO Define instance variables here
 operations
-	public Project: Utils`String*nat1*numForRole*budgetPerRole*set of Celebrity`celebrityType*nat1 ==> Project
+	public Project: Globals`String*nat1*numForRole*budgetPerRole*set of Celebrity`celebrityType*nat1 ==> Project
 		Project(n,m,d,b,ct,t) == 
 		(
 			name := n;
