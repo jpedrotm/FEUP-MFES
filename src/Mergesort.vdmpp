@@ -1,4 +1,16 @@
 class Mergesort -- from MFES and adapted to order an array of type Contract
+	operations
+	public pure static getPartContracts: seq of Contract*nat*nat ==> seq of Contract
+		getPartContracts(c,i,j) == (
+			dcl result: seq of Contract := [];
+			dcl k: nat := i;
+			while (k<=j) do(
+				result := result ^ [c(k)];
+				k := k + 1;
+			);
+			
+			return result;
+		);
 	functions
 		public static sortContracts: seq of Contract -> seq of Contract
 			sortContracts(s) == (
@@ -7,10 +19,12 @@ class Mergesort -- from MFES and adapted to order an array of type Contract
 			
 		private Mergesort: seq of Contract -> seq of Contract
 			Mergesort(s) == (
-				cases s:
-					[] -> [],
-					[x] -> [x],
-					s1 ^ s2 -> Merge(Mergesort(s1), Mergesort(s2))
+				cases len s:
+					0 -> s,
+					1 -> s,
+					others ->  let halfSize = floor ((len s) /2),
+					 s1 = getPartContracts(s,1,halfSize),
+					 s2 = getPartContracts(s,halfSize + 1, len s) in Merge(Mergesort(s1), Mergesort(s2))
 				end
 			);
 			
