@@ -15,10 +15,10 @@ instance variables
 	private celebrity: [Celebrity] := nil;
 	private totalPrice: nat1;
 	inv Globals`compareDates(startDate,finalDate);
-	--inv projectExistsInBrand(brand,project); Para descomentar depois
+	inv projectExistsInBrand(brand,project);
 operations
-	public Contract: nat1*Brand*Project*Celebrity*nat1*Globals`Date ==> Contract
-			Contract(durationT,b,p,c,price,sDate) == (
+	public Contract: nat1*Brand*Project*Celebrity*nat1*Globals`Date*contractRoles ==> Contract
+			Contract(durationT,b,p,c,price,sDate,r) == (
 			durationTime := durationT;
 			brand := b;
 			project := p;
@@ -26,19 +26,11 @@ operations
 			totalPrice := price;
 			startDate := sDate;
 			finalDate := Globals`calculateFinalDate(startDate,durationTime);
+			role := r;
 			return self)
 			post durationTime = durationT and brand = b and project = p and celebrity = c and totalPrice = price and startDate = sDate;
-			
-		public Contract: nat1*nat1 ==> Contract
-			Contract(d1,d2) == (
-				durationTime := d2 - d1;
-				startDate := mk_Globals`Date(2016,1,d1);
-				finalDate := mk_Globals`Date(2016,1,d2);
-				role := <ambassador>;
-				return self;
-			);
 	
-	public getDurationTime: () ==> nat1
+	public pure getDurationTime: () ==> nat1
 		getDurationTime() == return durationTime
 		pre durationTime > 0
 		post RESULT = durationTime;
@@ -55,7 +47,7 @@ operations
 		getCelebrity() == return celebrity
 		post RESULT = celebrity;
 		
-	public getTotalPrice: () ==> nat1
+	public pure getTotalPrice: () ==> nat1
 		getTotalPrice() == return totalPrice
 		post RESULT = totalPrice;
 		

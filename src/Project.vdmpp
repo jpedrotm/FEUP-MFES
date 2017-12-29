@@ -132,7 +132,7 @@ operations
 	getAppropriateCelebs(celebs) ==
 	(
 		return {
-			celeb | celeb in set celebs & dom celeb.getRoles() inter getDesiredRoles() <> {}	
+			celeb | celeb in set celebs & celeb.getRoles() inter getDesiredRoles() <> {}	
 			and celeb.getType() inter getDesiredCelebTypes() <> {} 
 		};
 	)
