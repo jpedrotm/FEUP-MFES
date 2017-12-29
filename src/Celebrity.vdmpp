@@ -70,11 +70,13 @@ class Celebrity
 			
 		public removeContract: Contract ==> ()
 			removeContract(c) == (
-				dcl tmpContracts: seq of Contract := contracts;
+				dcl tmpContracts: seq of Contract := [];
 				while len contracts > 0 do
 				(
 					if hd contracts <> c then
-						tmpContracts := tmpContracts ^ [hd contracts];
+						tmpContracts := tmpContracts ^ [hd contracts]
+					else
+						IO`print("Encontrou");
 					contracts := tl contracts;
 				);
 					

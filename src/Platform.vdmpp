@@ -17,31 +17,81 @@ operations
 		)
 		post brands = {} and celebs = {};
 		
+	public Platform: Globals`Date ==> Platform
+		Platform(d) == 
+		(
+			brands := {};
+			celebs := {};
+			currentDate := d;
+			return self;
+		)
+		post brands = {} and celebs = {};
+		
 	public getBrands: () ==> set of Brand
 		getBrands() == return brands;
 		
 	public getCelebs: () ==> set of Celebrity
 		getCelebs() == return celebs;
 		
-	public addBrand: Brand ==> set of Brand
+	public addBrand: Brand ==> ()
 		addBrand(brand) == 
 		(
 			brands := brands union {brand};
-			return brands;
 		)
 		pre brand not in set brands
-		post brand in set brands;
+		post brands = brands~ union {brand};
 		
-	public addCeleb: Celebrity ==> set of Celebrity
-		addCeleb(celeb) ==
+	public addCelebrity: Celebrity ==> ()
+		addCelebrity(celeb) ==
 		(
 			celebs := celebs union {celeb};
-			return celebs;
 		)
 		pre celeb not in set celebs
-		post celeb in set celebs;
+		post celeb in set celebs and celebs = celebs~ union {celeb};
 		
--- TODO Define operations here
+	public removeBrand: Brand ==> ()
+		removeBrand(brand) == 
+		(
+			brands := brands \ {brand};
+		)
+		pre brand in set brands
+		post brands = brands~ \ {brand};
+	
+	public removeCelebrity: Celebrity ==> ()
+		removeCelebrity(celeb) == 
+		(
+			celebs := celebs \ {celeb};
+		)
+		pre celeb in set celebs
+		post celebs = celebs~ \ {celeb};
+		
+	public step: Globals`Date ==> ()
+		step(d) == (
+			currentDate := d;
+			updatePlatform();
+		)
+		pre Globals`compareDates(currentDate,d)
+		post currentDate = d;
+		
+	public step: () ==> ()
+		step() == (
+			currentDate := Globals`calculateFinalDate(currentDate,1);
+			updatePlatform();
+		)
+		post Globals`compareDates(currentDate~,currentDate);
+		
+	public updatePlatform: () ==> ()
+		updatePlatform() == (
+			for all c in set celebs do( -- para cada celebridade vai verificar se a data final é inferior a atual, se for apaga o contrato
+				dcl contracts: seq of Contract := c.getContracts();
+				
+				for all cns in set elems contracts do(
+					if(Globals`compareDates(cns.getFinalDate(),currentDate)) then
+						c.removeContract(cns);
+				);
+			);
+		)
+		
 functions
 -- TODO Define functiones here
 traces
