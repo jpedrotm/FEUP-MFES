@@ -55,7 +55,7 @@ operations
 		post celeb in set celebs and celebs = celebs~ union {celeb};
 		
 	public createCelebrity: Globals`String*set of Celebrity`celebrityType*nat1*nat1*map Contract`contractRoles to nat1*nat1 ==> ()
-		createCelebrity(name,celebsTypes,minP,maxT,rs,maxC) == 	addCelebrity(new Celebrity(n,celebsTypes,minP,maxT,rs,maxC))
+		createCelebrity(name,celebsTypes,minP,maxT,rs,maxC) == 	addCelebrity(new Celebrity(name,celebsTypes,minP,maxT,rs,maxC))
 		pre name <> "" and celebsTypes <> {} and rs <> {|->}
 		post celebs <> {};
 		

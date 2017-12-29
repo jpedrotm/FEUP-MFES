@@ -1,0 +1,37 @@
+class BrandTest is subclass of Test
+types
+-- TODO Define types here
+values
+-- TODO Define values here
+instance variables
+-- TODO Define instance variables here
+operations
+	public testCreateBrand: () ==> ()
+		testCreateBrand() == 
+		(
+			dcl brand: Brand := new Brand("name");
+			assert(brand.getName() = "name");
+			assert(brand.getProjects() = {});
+			assert(brand.getNumProjects() = 0);
+		);
+		
+	public testAddAndRemoveProject: () ==> ()
+		testAddAndRemoveProject() == 
+		(
+			dcl brand: Brand := new Brand("name");
+			dcl proj: Project := new Project("projName", 1, {<ambassador> |-> 1}, {<ambassador> |-> 1000}, {<tech>}, 100);
+			
+			brand.addProject(proj);
+			assert(brand.getProjects() = {proj});
+			assert(brand.getNumProjects() = 1);
+			
+			brand.removeProject(proj);
+			assert(brand.getProjects() = {});
+			assert(brand.getNumProjects() = 0);
+		);
+-- TODO Define operations here
+functions
+-- TODO Define functiones here
+traces
+-- TODO Define Combinatorial Test Traces here
+end BrandTest

@@ -89,7 +89,7 @@ class Celebrity
 			checkIfContractIsGood(c) == (
 				if(c.getDurationTime() <= maxTime and minPrice >= c.getTotalPrice() and len contracts <= maxContracts) then
 					return true
-				else if(c.getDurationTime() <= maxTime and minPrice >= c.getTotalPrice() and haveSpaceForNewContract(c)) then
+				else if(c.getDurationTime() <= maxTime and minPrice >= c.getTotalPrice() and hasSpaceForNewContract(c)) then
 					return true
 				else return false;
 			)
