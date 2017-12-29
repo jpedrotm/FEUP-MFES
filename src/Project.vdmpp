@@ -35,7 +35,7 @@ operations
 			duration := t;
 			return self;
 		)
-		pre d <> {|->} and b <> {|->} and ct <> {} and maxNumContracts > 0-- The project must specify desired roles, budget for those roles, and desired celebrity types
+		pre d <> {|->} and b <> {|->} and ct <> {} and m > 0-- The project must specify desired roles, budget for those roles, and desired celebrity types
 		post name = n and contracts = {} and maxNumContracts = m and desiredNumPerRole = d and maxPricePerRole = b and desiredCelebTypes = ct and duration = t;
 		
 		
@@ -113,7 +113,7 @@ operations
 	getAppropriateCelebs(celebs) ==
 	(
 		return {
-			celeb | celeb in set celebs & dom celeb.getRoles() inter getDesiredRoles() <> {}	
+			celeb | celeb in set celebs & celeb.getRoles() inter getDesiredRoles() <> {}	
 			and celeb.getType() inter getDesiredCelebTypes() <> {} 
 		};
 	)

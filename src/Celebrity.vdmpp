@@ -9,12 +9,11 @@ class Celebrity
 		private type: set of celebrityType;
 		private minPrice: nat1;
 		private maxTime: nat1;
-		private roles: map Contract`contractRoles to nat1;
+		private roles: set of Contract`contractRoles;
 		private contracts: seq of Contract := [];
 		private maxContracts: nat1 := 2;
-		inv numActiveContracts() <= maxContracts;
 	operations
-		public Celebrity: Globals`String*set of celebrityType*nat1*nat1*map Contract`contractRoles to nat1*nat1 ==> Celebrity
+		public Celebrity: Globals`String*set of celebrityType*nat1*nat1*set of Contract`contractRoles*nat1 ==> Celebrity
 			Celebrity(n,celebsTypes,minP,maxT,rs,maxC) == (
 				name := n;
 		 		type := celebsTypes;
@@ -24,12 +23,8 @@ class Celebrity
 		 		maxContracts := maxC;
 		 		return self
 			)
-			pre celebsTypes <> {} and rs <> {|->}
+			pre celebsTypes <> {} and rs <> {}
 			post name = n and type = celebsTypes and minPrice = minP and maxTime = maxT and roles = rs and contracts = [] and maxContracts = maxC; --ver melhor isto
-		
-		
-		public Celebrity: () ==> Celebrity --apenas para testes
-			Celebrity() == (roles := {<speaker> |-> 1,<ambassador> |-> 1}; return self);
 		
 		public getName: () ==> Globals`String
 			getName() == return name
@@ -51,9 +46,9 @@ class Celebrity
 			pre maxTime > 0
 			post RESULT = maxTime;
 			
-		public getRoles: () ==> map Contract`contractRoles to nat1
+		public getRoles: () ==> set of Contract`contractRoles
 			getRoles() == return roles
-			pre roles <> {|->}
+			pre roles <> {}
 			post RESULT = roles;
 			
 		public getContracts: () ==> seq of Contract
@@ -65,8 +60,8 @@ class Celebrity
 				contracts := contracts ^ [c];
 				contracts := Mergesort`sortContracts(contracts);
 			)
-			pre numActiveContracts() < maxContracts and c not in set elems contracts
-			post contracts = Mergesort`sortContracts(contracts); -- talvez mude depois
+			pre checkIfContractIsGood(c) and c not in set elems contracts
+			post contracts = Mergesort`sortContracts(contracts) and numActiveContracts() <= maxContracts; -- talvez mude depois
 			
 		public removeContract: Contract ==> ()
 			removeContract(c) == (
@@ -74,9 +69,8 @@ class Celebrity
 				while len contracts > 0 do
 				(
 					if hd contracts <> c then
-						tmpContracts := tmpContracts ^ [hd contracts]
-					else
-						IO`print("Encontrou");
+						tmpContracts := tmpContracts ^ [hd contracts];
+					
 					contracts := tl contracts;
 				);
 					
@@ -85,17 +79,17 @@ class Celebrity
 			pre contracts <> [] and c in set elems contracts
 			post c not in set elems contracts and len contracts = (len contracts~) - 1;
 			
-		public checkIfContractIsGood: Contract ==> bool
+		public pure checkIfContractIsGood: Contract ==> bool
 			checkIfContractIsGood(c) == (
-				if(c.getDurationTime() <= maxTime and minPrice >= c.getTotalPrice() and len contracts <= maxContracts) then
+				if(c.getDurationTime() <= maxTime and minPrice <= c.getTotalPrice() and len contracts < maxContracts) then
 					return true
-				else if(c.getDurationTime() <= maxTime and minPrice >= c.getTotalPrice() and haveSpaceForNewContract(c)) then
+				else if(c.getDurationTime() <= maxTime and minPrice <= c.getTotalPrice() and hasSpaceForNewContract(c)) then
 					return true
 				else return false;
 			)
 			pre c not in set elems contracts;
 			
-		public hasSpaceForNewContract: Contract ==> bool
+		public pure hasSpaceForNewContract: Contract ==> bool
 			hasSpaceForNewContract(c) == (
 				dcl numOfDifferentContractDates: nat := 0;
 				for all contract in set elems contracts do
@@ -104,7 +98,7 @@ class Celebrity
 							numOfDifferentContractDates := numOfDifferentContractDates + 1;
 						);
 											
-				return (maxContracts - numOfDifferentContractDates) < maxContracts;
+				return (len contracts - numOfDifferentContractDates) < maxContracts;
 			);
 			
 		public pure numActiveContracts: () ==> nat

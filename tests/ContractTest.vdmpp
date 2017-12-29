@@ -1,0 +1,48 @@
+class ContractTest is subclass of Test
+types
+-- TODO Define types here
+values
+-- TODO Define values here
+instance variables
+	private duration: nat1 := 20;
+	private totalPrice: nat1 := 120;
+	private initialDate: Globals`Date := mk_Globals`Date(2016,1,10);
+	private brand: Brand := new Brand("Adidas");
+	private project1: Project := new Project("p1", 1, {<ambassador> |-> 1}, {<ambassador> |-> 1000}, {<tech>}, 100);
+	private celebrity: Celebrity := new Celebrity("Jose", {<sport>,<actor>}, 100, 30, {<ambassador>}, 2);
+	private contract1: [Contract] := nil;
+operations
+	private testAttributes: () ==> ()
+		testAttributes() == (
+			brand.addProject(project1);
+			contract1 := new Contract(duration,brand,project1,celebrity,totalPrice,initialDate,<ambassador>);
+			
+			assert(contract1.getDurationTime() = duration);
+			assert(contract1.getBrand() = brand);
+			assert(contract1.getProject() = project1);
+			assert(contract1.getCelebrity() = celebrity);
+			assert(contract1.getTotalPrice() = totalPrice);
+			assert(contract1.getStartDate() = initialDate);
+			assert(contract1.getFinalDate() = Globals`calculateFinalDate(initialDate,duration));
+		);
+		
+	--private testAddRemoveContracts: () ==> ()
+	--	testAddRemoveContracts() == (
+	--		
+	--	);
+		
+	private testAll: () ==> ()
+		testAll() == (
+			testAttributes();
+			--testAddRemoveContracts();
+		);
+		
+	public static main: () ==> ()
+		main() == (
+			new ContractTest().testAll();
+		);
+functions
+-- TODO Define functiones here
+traces
+-- TODO Define Combinatorial Test Traces here
+end ContractTest
