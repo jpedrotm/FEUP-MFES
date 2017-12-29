@@ -11,12 +11,12 @@ instance variables
 	
 operations
 -- TODO Define operations here
-	public Brand(n: Globals`String) res: Brand == 
-		(
+	public Brand:Globals`String ==> Brand
+		Brand(n) == (
 			name := n;
 			projects := {};
 		)
-		post res.name = name and res.projects = projects;
+		post name = n and projects = {};
 	
 	public getName: () ==> Globals`String
 		getName() == return name

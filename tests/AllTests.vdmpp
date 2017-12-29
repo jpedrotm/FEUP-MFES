@@ -1,0 +1,10 @@
+class AllTests
+operations
+	public static main: () ==> ()
+		main() == (
+			new CelebrityTest().main();
+			new ContractTest().main();
+			new BrandTest().main();
+			new PlatformTest().main();
+		);
+end AllTests

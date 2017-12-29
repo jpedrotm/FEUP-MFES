@@ -6,7 +6,7 @@ values
 instance variables
 -- TODO Define instance variables here
 operations
-	public testCreateBrand: () ==> ()
+	private testCreateBrand: () ==> ()
 		testCreateBrand() == 
 		(
 			dcl brand: Brand := new Brand("name");
@@ -15,7 +15,7 @@ operations
 			assert(brand.getNumProjects() = 0);
 		);
 		
-	public testAddAndRemoveProject: () ==> ()
+	private testAddAndRemoveProject: () ==> ()
 		testAddAndRemoveProject() == 
 		(
 			dcl brand: Brand := new Brand("name");
@@ -29,7 +29,17 @@ operations
 			assert(brand.getProjects() = {});
 			assert(brand.getNumProjects() = 0);
 		);
--- TODO Define operations here
+		
+	private testAll: () ==> ()
+		testAll() == (
+			testCreateBrand();
+			testAddAndRemoveProject();
+		);
+		
+	public static main: () ==> ()
+		main() == (
+			new BrandTest().testAll();
+		);
 functions
 -- TODO Define functiones here
 traces

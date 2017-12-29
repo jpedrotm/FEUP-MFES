@@ -1,4 +1,4 @@
-class ContractTest is subclass of Test
+class PlatformTest is subclass of Test
 types
 -- TODO Define types here
 values
@@ -12,19 +12,38 @@ instance variables
 	private celebrity: Celebrity := new Celebrity("Jose", {<sport>,<actor>}, 100, 30, {<ambassador>}, 2);
 	private contract1: [Contract] := nil;
 	private contract2: [Contract] := nil;
+	private platform: Platform := new Platform(mk_Globals`Date(2000,1,1));
 operations
 	private testAttributes: () ==> ()
 		testAttributes() == (
+			dcl stepDate: Globals`Date := Globals`calculateFinalDate(mk_Globals`Date(2015,1,1),731);
+			
+			platform := new Platform();
+			
+			platform.addBrand(brand);
+			platform.addCelebrity(celebrity);
+			
+			assert(platform.getBrands() = {brand});
+			assert(platform.getCelebs() = {celebrity});
+			
 			brand.addProject(project1);
 			contract1 := new Contract(duration,brand,project1,celebrity,totalPrice,initialDate,<ambassador>);
+			celebrity.addContract(contract1);
 			
-			assert(contract1.getDurationTime() = duration);
-			assert(contract1.getBrand() = brand);
-			assert(contract1.getProject() = project1);
-			assert(contract1.getCelebrity() = celebrity);
-			assert(contract1.getTotalPrice() = totalPrice);
-			assert(contract1.getStartDate() = initialDate);
-			assert(contract1.getFinalDate() = Globals`calculateFinalDate(initialDate,duration));
+			platform.step(stepDate);
+			
+			platform.removeBrand(brand);
+			platform.removeCelebrity(celebrity);
+			
+			assert(platform.getBrands() = {});
+			assert(platform.getCelebs() = {});
+			
+			platform.createBrand("Nike");
+			platform.createCelebrity("Antonio", {<actor>}, 100, 30, {<entertainer>}, 4);
+			
+			platform.step();
+			
+			assert(platform.currentDate = mk_Globals`Date(2017,1,2));
 		);
 		
 	private testAll: () ==> ()
@@ -34,10 +53,10 @@ operations
 		
 	public static main: () ==> ()
 		main() == (
-			new ContractTest().testAll();
+			new PlatformTest().testAll();
 		);
 functions
 -- TODO Define functiones here
 traces
 -- TODO Define Combinatorial Test Traces here
-end ContractTest
+end PlatformTest
