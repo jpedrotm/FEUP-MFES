@@ -141,7 +141,7 @@ operations
 	public proposeContract: Contract*Celebrity ==> bool
 		proposeContract(contract, celeb) == 
 		(
-			if not celeb.hasSpaceForNewContract(contract) and celeb.checkIfContractIsGood(contract)
+			if not (celeb.hasSpaceForNewContract(contract) and celeb.checkIfContractIsGood(contract))
 				then return false;
 				
 			addContract(contract);
