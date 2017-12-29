@@ -38,12 +38,31 @@ operations
 		pre d <> {|->} and b <> {|->} and ct <> {} and m > 0-- The project must specify desired roles, budget for those roles, and desired celebrity types
 		post name = n and contracts = {} and maxNumContracts = m and desiredNumPerRole = d and maxPricePerRole = b and desiredCelebTypes = ct and duration = t;
 		
-		
-		public addContract: Contract ==> ()
-			addContract(c) == contracts := contracts union {c}
-			pre card contracts < maxNumContracts and c not in set  contracts
-			post c in set contracts; 
+	public getName: () ==> Globals`String
+		getName() == return name
+		post RESULT = name;
 			
+	public getContracts: () ==> set of Contract
+		getContracts() == return contracts
+		post RESULT = contracts;
+		
+	public getNumContracts: () ==> nat
+		getNumContracts() == return card contracts
+		post RESULT = card contracts;
+			
+	public getMaxNumContracts: () ==> nat1
+		getMaxNumContracts() == return maxNumContracts
+		post RESULT = maxNumContracts;	
+		
+	public addContract: Contract ==> ()
+		addContract(c) == contracts := contracts union {c}
+		pre card contracts < maxNumContracts and c not in set  contracts
+		post c in set contracts; 		
+			
+	public getDuration: () ==> nat1
+		getDuration() == return duration
+		post RESULT = duration;
+		
 	-- ----- Desired Roles ----------------------------------------------
 	public getDesiredNumPerRole: () ==> numForRole
 		getDesiredNumPerRole() == return desiredNumPerRole
@@ -133,10 +152,7 @@ operations
 		pre card contracts < maxNumContracts;
 	
 	-- ----- Search celebrity End ----------------------------------------
-	
-	public getDuration: () ==> nat1
-		getDuration() == return duration
-		post RESULT = duration;
+
 		
 functions
 -- TODO Define functiones here

@@ -1,0 +1,36 @@
+class ProjectTest is subclass of Test
+types
+-- TODO Define types here
+values
+-- TODO Define values here
+instance variables
+-- TODO Define instance variables here
+operations
+	public testCreateProject: () ==> ()
+		testCreateProject() == 
+		(
+			dcl proj: Project := new Project("name", 5, {<ambassador> |-> 1, <speaker> |-> 4}, {<ambassador> |-> 1000, <speaker> |-> 500}, {<tech>}, 20);
+			assert(proj.getName() = "name");
+			assert(proj.getContracts() = {});
+			assert(proj.getNumContracts() = 0);
+			assert(proj.getMaxNumContracts() = 5);
+			assert(proj.getDesiredNumPerRole() = {<ambassador> |-> 1, <speaker> |-> 4});
+			assert(proj.getDesiredRoles() = {<ambassador>, <speaker>});
+			assert(proj.getDesiredNumForRole(<ambassador>) = 1);
+			assert(proj.getDesiredNumForRole(<speaker>) = 4);
+			assert(proj.getTotalNumDesiredRoles() = 5);
+			assert(proj.getBudgetPerRole() = {<ambassador> |-> 1000, <speaker> |-> 500});
+			assert(proj.getMaxPriceForRole(<ambassador>) = 1000);
+			assert(proj.getMaxPriceForRole(<speaker>) = 500);
+			assert(proj.getBudgetedRoles() = {<ambassador>, <speaker>});
+			assert(proj.getTotalNumBudgetedRoles() = 2);
+			assert(proj.getDesiredCelebTypes() = {<tech>});
+			assert(proj.getDuration() = 20);
+			assert(proj.getDesiredNumForRole(<productPlacement>) = 0);
+			assert(proj.getMaxPriceForRole(<productPlacement>) = 0);
+		)
+functions
+-- TODO Define functiones here
+traces
+-- TODO Define Combinatorial Test Traces here
+end ProjectTest
