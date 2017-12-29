@@ -34,6 +34,11 @@ operations
 		addProject(p) == projects := projects union {p}
 		pre p not in set projects
 		post p in set projects;
+		
+	public removeProject: Project ==> ()
+		removeProject(p) == projects := projects \ {p}
+		pre p in set projects
+		post p not in set projects;
 
 functions
 -- TODO Define functiones here
