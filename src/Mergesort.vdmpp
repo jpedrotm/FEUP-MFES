@@ -1,6 +1,6 @@
 class Mergesort -- from MFES and adapted to order an array of type Contract
 	operations
-	public pure static getPartContracts: seq of Contract*nat*nat ==> seq of Contract
+	private pure static getPartContracts: seq of Contract*nat*nat ==> seq of Contract
 		getPartContracts(c,i,j) == (
 			dcl result: seq of Contract := [];
 			dcl k: nat := i;

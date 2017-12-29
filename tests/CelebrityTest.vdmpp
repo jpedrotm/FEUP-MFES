@@ -4,6 +4,7 @@ types
 values
 -- TODO Define values here
 instance variables
+	plat: Platform;
 	celebrity: Celebrity;
 	con1: Contract;
 	con2: Contract;
@@ -15,19 +16,26 @@ operations
 			celebrity := new Celebrity();
 			con1 := new Contract(1,20);
 			con2 := new Contract(1,10);
-			con3 := new Contract(1,15);
-			con4 := new Contract(14,19);
+			--con3 := new Contract(1,15);
+			--con4 := new Contract(14,19);
 			
 			celebrity.addContract(con1);
 			IO`print(celebrity.numActiveContracts());
+			IO`print("\n");
 			celebrity.addContract(con2);
 			IO`print(celebrity.numActiveContracts());
+			IO`print("\n");
 			IO`print(celebrity);
+			IO`print("\n");
 			
+			plat := new Platform();
+			plat.addCelebrity(celebrity);
 			IO`print("\n");
-			IO`print(celebrity.haveSpaceForNewContract(con3));
+			plat.updatePlatform();
+			IO`print(plat);
 			IO`print("\n");
-			IO`print(celebrity.haveSpaceForNewContract(con4));
+			plat.step();
+			IO`print(plat);
 		);
 		
 	public static main: () ==> ()
