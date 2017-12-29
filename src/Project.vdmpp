@@ -9,13 +9,13 @@ values
 -- TODO Define values here
 instance variables
 	private name: Globals`String;
-	private contracts: seq of Contract;
+	private contracts: set of Contract;
 	private maxNumContracts: nat1;
 	private desiredNumPerRole: numForRole;
 	private maxPricePerRole: budgetPerRole;
 	private desiredCelebTypes: set of Celebrity`celebrityType;
 	private duration: nat1;
-	inv len contracts <= maxNumContracts; -- the project does not have more contracts than desired
+	inv card contracts <= maxNumContracts; -- the project does not have more contracts than desired
 	inv getTotalNumDesiredRoles() <= maxNumContracts;
 	inv getTotalNumBudgetedRoles() <= maxNumContracts;
 	inv dom desiredNumPerRole = dom maxPricePerRole;
@@ -27,7 +27,7 @@ operations
 		Project(n,m,d,b,ct,t) == 
 		(
 			name := n;
-			contracts := [];
+			contracts := {};
 			maxNumContracts := m;
 			desiredNumPerRole := d;
 			maxPricePerRole := b;
@@ -35,9 +35,15 @@ operations
 			duration := t;
 			return self;
 		)
-		pre d <> {|->} and b <> {|->} and ct <> {} -- The project must specify desired roles, budget for those roles, and desired celebrity types
-		post name = n and contracts = [] and maxNumContracts = m and desiredNumPerRole = d and maxPricePerRole = b and desiredCelebTypes = ct and duration = t;
+		pre d <> {|->} and b <> {|->} and ct <> {} and maxNumContracts > 0-- The project must specify desired roles, budget for those roles, and desired celebrity types
+		post name = n and contracts = {} and maxNumContracts = m and desiredNumPerRole = d and maxPricePerRole = b and desiredCelebTypes = ct and duration = t;
 		
+		
+		public addContract: Contract ==> ()
+			addContract(c) == contracts := contracts union {c}
+			pre card contracts < maxNumContracts and c not in set  contracts
+			post c in set contracts; 
+			
 	-- ----- Desired Roles ----------------------------------------------
 	public getDesiredNumPerRole: () ==> numForRole
 		getDesiredNumPerRole() == return desiredNumPerRole
@@ -112,7 +118,19 @@ operations
 		};
 	)
 	pre desiredNumPerRole <> {|->} and desiredCelebTypes <> {};
-
+	
+	public proposeContract: Contract*Celebrity ==> bool
+		proposeContract(contract, celeb) == 
+		(
+			if not celeb.hasSpaceForNewContract(contract) and celeb.checkIfContractIsGood(contract)
+				then return false;
+				
+			addContract(contract);
+			celeb.addContract(contract);
+			
+			return true;
+		)
+		pre card contracts < maxNumContracts;
 	
 	-- ----- Search celebrity End ----------------------------------------
 	
