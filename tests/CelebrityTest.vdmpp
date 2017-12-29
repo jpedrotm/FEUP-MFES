@@ -1,46 +1,74 @@
-class CelebrityTest
+class CelebrityTest is subclass of Test
 types
 -- TODO Define types here
 values
 -- TODO Define values here
 instance variables
-	plat: Platform;
-	celebrity: Celebrity;
-	con1: Contract;
-	con2: Contract;
-	con3: Contract;
-	con4: Contract;
+	private name: Globals`String := "Jose";
+	private celebTypes: set of Celebrity`celebrityType := {<sport>,<actor>};
+	private celebRoles: set of Contract`contractRoles := {<ambassador>};
+	private minPrice: nat1 := 100;
+	private maxTime: nat1 := 30;
+	private maxContracts: nat1 := 2;
+	private celebrity: Celebrity := new Celebrity(name,celebTypes,minPrice,maxTime,celebRoles,maxContracts);
+	private brand: Brand := new Brand("Adidas");
+	private project1: Project := new Project("p1", 1, {<ambassador> |-> 1}, {<ambassador> |-> 1000}, {<tech>}, 100);
+	private contract1: [Contract] := nil;
+	private contract2: [Contract] := nil;
+	private contract3: [Contract] := nil;
+	private contract4: [Contract] := nil;
 operations
-	private testCelebrity: () ==> ()
-		testCelebrity() == (
-			celebrity := new Celebrity();
-			con1 := new Contract(1,20);
-			con2 := new Contract(1,10);
-			--con3 := new Contract(1,15);
-			--con4 := new Contract(14,19);
-			
-			celebrity.addContract(con1);
-			IO`print(celebrity.numActiveContracts());
-			IO`print("\n");
-			celebrity.addContract(con2);
-			IO`print(celebrity.numActiveContracts());
-			IO`print("\n");
-			IO`print(celebrity);
-			IO`print("\n");
-			
-			plat := new Platform();
-			plat.addCelebrity(celebrity);
-			IO`print("\n");
-			plat.updatePlatform();
-			IO`print(plat);
-			IO`print("\n");
-			plat.step();
-			IO`print(plat);
+	private testAttributes: () ==> ()
+		testAttributes() == (
+			assert(celebrity.getName() = name);
+			assert(celebrity.getType() = celebTypes);
+			assert(celebrity.getMinPrice() = minPrice);
+			assert(celebrity.getMaxTime() = maxTime);
+			assert(celebrity.getRoles() = celebRoles);
+			assert(celebrity.getContracts() = []);
+		);
+		
+	private testAddRemoveContracts: () ==> ()
+		testAddRemoveContracts() == (
+				brand.addProject(project1);
+				contract1 := new Contract(30,brand,project1,celebrity,120,mk_Globals`Date(2016,1,1),<ambassador>);
+				contract2 := new Contract(20,brand,project1,celebrity,120,mk_Globals`Date(2016,1,1),<ambassador>);
+				contract3 := new Contract(15,brand,project1,celebrity,120,mk_Globals`Date(2016,2,1),<ambassador>);
+				contract4 := new Contract(15,brand,project1,celebrity,120,mk_Globals`Date(2016,1,1),<ambassador>);
+		
+				-- Adicionar contratos com contractos_activos < maxContratos
+				assert(celebrity.checkIfContractIsGood(contract1));
+				celebrity.addContract(contract1);
+				assert(celebrity.getContracts() = [contract1]);
+				
+				assert(celebrity.checkIfContractIsGood(contract2));
+				celebrity.addContract(contract2);
+				assert(celebrity.getContracts() = [contract2,contract1]);
+				
+				-- Adicionar contrato com contractos_activos >= maxContratos data sem interseção com outros contratos
+				assert(celebrity.checkIfContractIsGood(contract3));
+				celebrity.addContract(contract3);
+				assert(celebrity.getContracts() = [contract2,contract1,contract3]);
+				
+				-- Adicionar contrato com contractos_activos >= maxContratos com data com interseção com outros contratos
+				assert(celebrity.checkIfContractIsGood(contract4) = false);
+				--celebrity.addContract(contract4);
+				--assert(celebrity.getContracts() = [contract2,contract1,contract3]);
+				
+				-- Remover contrato
+				celebrity.removeContract(contract1);
+				assert(celebrity.getContracts() = [contract2,contract3]);
+		);
+		
+	private testAll: () ==> ()
+		testAll() == (
+			testAttributes();
+			testAddRemoveContracts();
 		);
 		
 	public static main: () ==> ()
 		main() == (
-			new CelebrityTest().testCelebrity();
+			new CelebrityTest().testAll();
 		);
 functions
 -- TODO Define functiones here
