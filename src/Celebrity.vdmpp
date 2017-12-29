@@ -95,8 +95,8 @@ class Celebrity
 			)
 			pre c not in set elems contracts;
 			
-		public haveSpaceForNewContract: Contract ==> bool
-			haveSpaceForNewContract(c) == (
+		public hasSpaceForNewContract: Contract ==> bool
+			hasSpaceForNewContract(c) == (
 				dcl numOfDifferentContractDates: nat := 0;
 				for all contract in set elems contracts do
 					if (Globals`compareDates(contract.getFinalDate(), c.getStartDate()) or Globals`compareDates(c.getFinalDate(),contract.getStartDate())) then

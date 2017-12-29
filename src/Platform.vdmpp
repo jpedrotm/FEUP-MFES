@@ -41,6 +41,11 @@ operations
 		pre brand not in set brands
 		post brands = brands~ union {brand};
 		
+	public createBrand: Globals`String ==> ()
+		createBrand(name) == 	addBrand(new Brand(name))
+		pre name <> ""
+		post brands <> {};
+	
 	public addCelebrity: Celebrity ==> ()
 		addCelebrity(celeb) ==
 		(
@@ -48,6 +53,11 @@ operations
 		)
 		pre celeb not in set celebs
 		post celeb in set celebs and celebs = celebs~ union {celeb};
+		
+	public createCelebrity: Globals`String*set of Celebrity`celebrityType*nat1*nat1*map Contract`contractRoles to nat1*nat1 ==> ()
+		createCelebrity(name,celebsTypes,minP,maxT,rs,maxC) == 	addCelebrity(new Celebrity(n,celebsTypes,minP,maxT,rs,maxC))
+		pre name <> "" and celebsTypes <> {} and rs <> {|->}
+		post celebs <> {};
 		
 	public removeBrand: Brand ==> ()
 		removeBrand(brand) == 
@@ -82,7 +92,7 @@ operations
 		
 	public updatePlatform: () ==> ()
 		updatePlatform() == (
-			for all c in set celebs do( -- para cada celebridade vai verificar se a data final é inferior a atual, se for apaga o contrato
+			for all c in set celebs do( -- para cada celebridade vai verificar se a data final ï¿½ inferior a atual, se for apaga o contrato
 				dcl contracts: seq of Contract := c.getContracts();
 				
 				for all cns in set elems contracts do(
