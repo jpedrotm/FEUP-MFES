@@ -12,6 +12,7 @@ class Celebrity
 		private roles: set of Contract`contractRoles;
 		private contracts: seq of Contract := [];
 		private maxContracts: nat1 := 2;
+		inv numActiveContracts() <= maxContracts;
 	operations
 		public Celebrity: Globals`String*set of celebrityType*nat1*nat1*set of Contract`contractRoles*nat1 ==> Celebrity
 			Celebrity(n,celebsTypes,minP,maxT,rs,maxC) == (
@@ -23,8 +24,8 @@ class Celebrity
 		 		maxContracts := maxC;
 		 		return self
 			)
-			pre celebsTypes <> {} and rs <> {}
-			post name = n and type = celebsTypes and minPrice = minP and maxTime = maxT and roles = rs and contracts = [] and maxContracts = maxC; --ver melhor isto
+			pre celebsTypes <> {} and rs <> {} and n <> "" and minP > 0 and maxT > 0 and maxC > 0
+			post name = n and type = celebsTypes and minPrice = minP and maxTime = maxT and roles = rs and contracts = [] and maxContracts = maxC;
 		
 		public getName: () ==> Globals`String
 			getName() == return name
@@ -46,7 +47,7 @@ class Celebrity
 			pre maxTime > 0
 			post RESULT = maxTime;
 			
-		public getRoles: () ==> set of Contract`contractRoles
+		public pure getRoles: () ==> set of Contract`contractRoles
 			getRoles() == return roles
 			pre roles <> {}
 			post RESULT = roles;
@@ -60,8 +61,8 @@ class Celebrity
 				contracts := contracts ^ [c];
 				contracts := Mergesort`sortContracts(contracts);
 			)
-			pre checkIfContractIsGood(c) and c not in set elems contracts
-			post contracts = Mergesort`sortContracts(contracts) and numActiveContracts() <= maxContracts; -- talvez mude depois
+			pre checkIfContractIsGood(c) and c not in set elems contracts and c.getRole() in set roles
+			post contracts = Mergesort`sortContracts(contracts) and numActiveContracts() <= maxContracts;
 			
 		public removeContract: Contract ==> ()
 			removeContract(c) == (

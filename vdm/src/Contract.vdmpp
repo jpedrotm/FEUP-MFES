@@ -28,6 +28,7 @@ operations
 			finalDate := Globals`calculateFinalDate(startDate,durationTime);
 			role := r;
 			return self)
+			pre durationT > 0 and p in set b.projects and r in set c.getRoles() and price > 0 and Globals`compareDates(Platform`currentDate,sDate)
 			post durationTime = durationT and brand = b and project = p and celebrity = c and totalPrice = price and startDate = sDate;
 	
 	public pure getDurationTime: () ==> nat1
@@ -42,6 +43,10 @@ operations
 	public getProject: () ==> Project
 		getProject() == return project
 		post RESULT = project;
+		
+	public pure getRole: () ==> contractRoles
+		getRole() == return role
+		post RESULT = role;
 		
 	public getCelebrity: () ==> [Celebrity]
 		getCelebrity() == return celebrity

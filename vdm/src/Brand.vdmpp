@@ -39,6 +39,8 @@ operations
 		removeProject(p) == projects := projects \ {p}
 		pre p in set projects
 		post p not in set projects;
+		
+		--TODO criar função que adiciona o contrato ao projeto e a celebridade
 
 functions
 -- TODO Define functiones here
