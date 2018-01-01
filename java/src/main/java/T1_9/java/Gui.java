@@ -22,7 +22,6 @@ public class Gui implements Consumer<TextIO> {
 
 	public static void main(String[] args) {
 		Gui gui = new Gui();
-		System.out.println(gui.getPlatform().toString());
 		TextTerminal<?> textTerminal = new SwingTextTerminalProvider().getTextTerminal();
 		textTerminal.init();
 		TextIO textIO = new TextIO(textTerminal);
@@ -101,11 +100,12 @@ public class Gui implements Consumer<TextIO> {
 	}
 
 	public void mainMenuView(TextIO textIO, SwingTextTerminal terminal, TerminalProperties<?> props) {
-		setSubtitle(textIO, terminal, props, "Main Menu");
+		setSubtitle(textIO, terminal, props, "Main Menu\nCurrent Date: "+platform.currentDate.toString());
 
 		terminal.println("1 - Celebrities");
 		terminal.println("2 - Brands");
-		terminal.println("3 - Exit");
+		terminal.println("3 - Update current date");
+		terminal.println("4 - Exit");
 
 		props.setPromptUnderline(false);
 		props.setPromptBold(false);
@@ -119,13 +119,14 @@ public class Gui implements Consumer<TextIO> {
 			terminal.resetToBookmark("start");
 			celebrityView(textIO, terminal, props);
 			break;
-
 		case 2:
 			terminal.resetToBookmark("start");
 			brandView(textIO, terminal, props);
 			break;
-
 		case 3:
+			terminal.resetToBookmark("start");
+			stepView(textIO,terminal,props);
+		case 4:
 			terminal.dispose();
 			break;
 		}
@@ -139,7 +140,7 @@ public class Gui implements Consumer<TextIO> {
 		terminal.println("3 - Remove celebrity.");
 		terminal.println("4 - Back to main menu.");
 
-		int option = textIO.newIntInputReader().withMinVal(1).withMaxVal(3).read("Choose an option: ");
+		int option = textIO.newIntInputReader().withMinVal(1).withMaxVal(4).read("Choose an option: ");
 
 		switch (option) {
 		case 1:
@@ -183,8 +184,8 @@ public class Gui implements Consumer<TextIO> {
 	public void addNewCelebrity(TextIO textIO, SwingTextTerminal terminal, TerminalProperties<?> props) {
 		String typesList = "\n1-sport\n2-actor\n3-comedian\n4-tech\n5-music\n6-cook\n7-magic\n8-stop adding roles";
 		String rolesList = "\n1-ambassador\n2-speaker\n3-entertainer\n4-eventSponsor\n5-digitalInfluence\n6-productPlacement\n7-stop picking roles";
-		ArrayList<Integer> rolesSelected = new ArrayList<Integer>();
-		ArrayList<Integer> typesSelected = new ArrayList<Integer>();
+		HashSet<Integer> rolesSelected = new HashSet<Integer>();
+		HashSet<Integer> typesSelected = new HashSet<Integer>();
 
 		setSubtitle(textIO, terminal, props, "Create New Celebrity");
 		String name = textIO.newStringInputReader().read("Name: ");
@@ -198,8 +199,13 @@ public class Gui implements Consumer<TextIO> {
 				break;
 			else if (option == 8 && typesSelected.size() == 0)
 				terminal.println("You have to choose at list one type!");
-			else
-				typesSelected.add(option);
+			else {
+				if(typesSelected.contains(option)) {
+					terminal.println("Can't choose the same type twice!");
+				} else {
+					typesSelected.add(option);
+				}
+			}
 		}
 
 		int maxTime = textIO.newIntInputReader().withMinVal(1)
@@ -225,14 +231,19 @@ public class Gui implements Consumer<TextIO> {
 			{
 				numContractsForRole = textIO.newIntInputReader().withMinVal(1).withMaxVal(7)
 						.read("Select a number of contracts (max "+missingContracts+" contracts): ");
-				rolesSelected.add(option);
+				
+				if(rolesSelected.contains(option)) {
+					terminal.println("Can't choose the same role twice!");
+				} else {
+					rolesSelected.add(option);
+				}
 			}
 			
 			totalContracts += numContractsForRole;
 			if(maxContracts == totalContracts)
 				break;
 		}
-
+		
 		VDMSet setTypes = fillSetTypes(typesSelected);
 		VDMSet setRoles = fillSetRoles(rolesSelected);
 
@@ -278,11 +289,13 @@ public class Gui implements Consumer<TextIO> {
 		mainMenuView(textIO,terminal,props);
 	}
 	
-	public VDMSet fillSetTypes(ArrayList<Integer> typesSelected) {
+	public VDMSet fillSetTypes(HashSet<Integer> typesSelected) {
 		VDMSet set = SetUtil.set();
-		for(int i = 0;i < typesSelected.size();i++)
+		
+		for(Iterator iterator = typesSelected.iterator();iterator.hasNext();)
 		{
-			switch(typesSelected.get(i)) {
+			int val = (Integer) iterator.next();
+			switch(val) {
 				case 1:
 					set.add(new sportQuote());
 					break;
@@ -310,11 +323,12 @@ public class Gui implements Consumer<TextIO> {
 		return set;
 	}
 		
-	public VDMSet fillSetRoles(ArrayList<Integer> typesRoles) {
+	public VDMSet fillSetRoles(HashSet<Integer> typesRoles) {
 			VDMSet set = SetUtil.set();
-			for(int i = 0;i < typesRoles.size();i++)
+			for(Iterator iterator = typesRoles.iterator();iterator.hasNext();)
 			{
-				switch(typesRoles.get(i)) {
+				int val = (Integer) iterator.next();
+				switch(val) {
 					case 1:
 						set.add(new ambassadorQuote());
 						break;
@@ -377,4 +391,62 @@ public class Gui implements Consumer<TextIO> {
 		brandView(textIO, terminal, props);
 	}
 
+	public void stepView(TextIO textIO, SwingTextTerminal terminal, TerminalProperties<?> props) {
+		setSubtitle(textIO, terminal, props, "Update Date Menu");
+
+		terminal.println("1 - Step one day.");
+		terminal.println("2 - Step to a given date.");
+		terminal.println("3 - Back to main menu.");
+
+		int option = textIO.newIntInputReader().withMinVal(1).withMaxVal(3).read("Choose an option: ");
+
+		switch (option) {
+		case 1:
+			stepOnDay(textIO,terminal,props);
+			break;
+		case 2:
+			stepToAGivenDate(textIO,terminal,props);
+			break;
+		case 3:
+			mainMenuView(textIO,terminal,props);
+			break;
+		}
+	}
+	
+	public void stepOnDay(TextIO textIO, SwingTextTerminal terminal, TerminalProperties<?> props) {
+		platform.step();
+		mainMenuView(textIO,terminal,props);
+	}
+	
+	public void stepToAGivenDate(TextIO textIO, SwingTextTerminal terminal, TerminalProperties<?> props) {
+		setSubtitle(textIO, terminal, props, "Step to a given date");
+		int currentYear = ((Long) Platform.currentDate.year).intValue();
+		int maxDay;
+		int minMonth = 1;
+		int minDay = 1;
+		Globals.Date d;
+		
+		while(true) {
+			int year = textIO.newIntInputReader().withMinVal(currentYear).read("What is the year (min is "+currentYear+")? ");
+			if(year == currentYear) {
+				minMonth = ((Long) Platform.currentDate.month).intValue();
+			}
+			
+			int month = textIO.newIntInputReader().withMinVal(1).withMaxVal(12).read("What is the month ["+minMonth+",12]? ");
+			if(month == minMonth && year == currentYear) {
+				minDay = ((Long) Platform.currentDate.day).intValue();
+			}
+			maxDay = ((Long) Globals.DaysOfMonth(year, month)).intValue();
+			int day = textIO.newIntInputReader().withMinVal(minDay).withMaxVal(maxDay).read("What is the day ["+minDay+","+maxDay+"]? ");
+			d = new Globals.Date(Long.valueOf(year),Long.valueOf(month),Long.valueOf(day));
+			
+			if(Globals.inv_Date(d) && Globals.compareDates(platform.currentDate, d)) {
+				break;
+			} else {
+				terminal.println("The date is not valid pick other!");
+			}
+		}
+		platform.step(d);
+		mainMenuView(textIO,terminal,props);
+	}
 }
