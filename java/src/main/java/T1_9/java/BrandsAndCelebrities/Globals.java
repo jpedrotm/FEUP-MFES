@@ -221,7 +221,7 @@ public class Globals {
 
     public String toString() {
 
-      return "mk_Globals`Date" + Utils.formatFields(year, month, day);
+      return day+"/"+month+"/"+year;
     }
   }
 
