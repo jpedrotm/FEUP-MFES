@@ -12,6 +12,7 @@ instance variables
 	private celebrity: Celebrity := new Celebrity("Jose", {<sport>,<actor>}, 100, 30, {<ambassador>}, 2);
 	private contract1: [Contract] := nil;
 	private contract2: [Contract] := nil;
+	private contract3: [Contract] := nil;
 	private platform: Platform := new Platform(mk_Globals`Date(2000,1,1));
 operations
 	private testAttributes: () ==> ()
@@ -30,7 +31,15 @@ operations
 			contract1 := new Contract(duration,brand,project1,celebrity,totalPrice,initialDate,<ambassador>);
 			celebrity.addContract(contract1);
 			
+			contract2 := new Contract(duration,brand,project1,celebrity,totalPrice,mk_Globals`Date(2017,1,10),<ambassador>);
+			celebrity.addContract(contract2);
+			
+			contract3 := new Contract(duration,brand,project1,celebrity,totalPrice,mk_Globals`Date(2017,1,20),<ambassador>);
+			celebrity.addContract(contract3);
+			
 			platform.step(stepDate);
+			
+			assert(celebrity.getContracts() = [contract2,contract3]);
 			
 			platform.removeBrand(brand);
 			platform.removeCelebrity(celebrity);

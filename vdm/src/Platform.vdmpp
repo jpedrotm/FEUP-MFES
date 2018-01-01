@@ -92,13 +92,19 @@ operations
 		
 	public updatePlatform: () ==> ()
 		updatePlatform() == (
-			for all c in set celebs do( -- para cada celebridade vai verificar se a data final � inferior a atual, se for apaga o contrato
+			dcl stopCycle: bool := false;
+			for all c in set celebs do( -- para cada celebridade vai verificar se a data final e inferior a atual, se for apaga o contrato
 				dcl contracts: seq of Contract := c.getContracts();
-				
-				for all cns in set elems contracts do(
-					if(Globals`compareDates(cns.getFinalDate(),currentDate)) then
-						c.removeContract(cns);
+				dcl i: int := 1;
+				while(i <= len contracts and stopCycle <> true) do (
+					dcl contract: Contract := contracts(i);
+					if(Globals`compareDates(contract.getFinalDate(),currentDate)) then
+						c.removeContract(contract)
+					else
+						stopCycle := true;
+					i := i + 1;
 				);
+				stopCycle := false;
 			);
 		)
 		
