@@ -4,6 +4,7 @@ types
 values
 -- TODO Define values here
 instance variables
+
 	proj: Project := new Project("name", 5, {<ambassador> |-> 1, <speaker> |-> 4}, {<ambassador> |-> 1000, <speaker> |-> 500}, {<tech>}, 20, mk_Globals`Date(2016,1,10));
 	brand: Brand := new Brand("name");
 	c1: Celebrity := new Celebrity("name", {<tech>}, 10, 30, {<speaker>}, 5); -- Celebrity that fits all requirements
@@ -42,7 +43,6 @@ operations
 			assert(p.getDesiredCelebTypes() = {<tech>});
 			assert(p.getDuration() = 20);
 			assert(p.getDesiredNumForRole(<productPlacement>) = 0);
-			assert(p.getMaxPriceForRole(<productPlacement>) = 0);
 		);
 		
 	public testSearchCelebs: () ==> ()
@@ -60,6 +60,7 @@ operations
 		(
 			-- project to make contract to fill up c4's contracts
 			dcl proj2: Project := new Project("name2", 5, {<ambassador> |-> 1, <speaker> |-> 4}, {<ambassador> |-> 1000, <speaker> |-> 500}, {<tech>}, 20, mk_Globals`Date(2016,1,10));
+
 			brand.addProject(proj);
 			brand.addProject(proj2);
 			
@@ -83,9 +84,10 @@ operations
 			testSearchCelebs();
 			testProposeContract();
 		);
-		
+
 	public main: () ==> ()
 		main() == new ProjectTest().testAll();
+
 functions
 -- TODO Define functiones here
 traces
