@@ -65,7 +65,7 @@ operations
 		getDuration() == return duration
 		post RESULT = duration;
 		
-	public getStartDate: () ==> Globals`Date
+	public pure getStartDate: () ==> Globals`Date
 		getStartDate() == return startDate
 		post RESULT = startDate;
 		

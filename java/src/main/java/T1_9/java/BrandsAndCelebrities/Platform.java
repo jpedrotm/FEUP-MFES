@@ -1,4 +1,4 @@
-package T1_9.java.BrandsAndCelebrities;
+package sadf;
 
 import java.util.*;
 import org.overture.codegen.runtime.*;
@@ -94,17 +94,40 @@ public class Platform {
 
   public void updatePlatform() {
 
+    Boolean stopCycle = false;
     for (Iterator iterator_5 = celebs.iterator(); iterator_5.hasNext(); ) {
       Celebrity c = (Celebrity) iterator_5.next();
       VDMSeq contracts = c.getContracts();
-      for (Iterator iterator_6 = SeqUtil.elems(Utils.copy(contracts)).iterator();
-          iterator_6.hasNext();
-          ) {
-        Contract cns = (Contract) iterator_6.next();
-        if (Globals.compareDates(cns.getFinalDate(), Utils.copy(Platform.currentDate))) {
-          c.removeContract(cns);
+      Number i = 1L;
+      Boolean whileCond_4 = true;
+      while (whileCond_4) {
+        Boolean andResult_42 = false;
+
+        if (i.longValue() <= contracts.size()) {
+          if (!(Utils.equals(stopCycle, true))) {
+            andResult_42 = true;
+          }
+        }
+
+        whileCond_4 = andResult_42;
+
+        if (!(whileCond_4)) {
+          break;
+        }
+
+        {
+          Contract contract = ((Contract) Utils.get(contracts, i));
+          if (Globals.compareDates(contract.getFinalDate(), Utils.copy(Platform.currentDate))) {
+            c.removeContract(contract);
+          } else {
+            stopCycle = true;
+          }
+
+          i = i.longValue() + 1L;
         }
       }
+
+      stopCycle = false;
     }
   }
 

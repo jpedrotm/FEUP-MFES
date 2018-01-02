@@ -1,4 +1,4 @@
-package T1_9.java.BrandsAndCelebrities.quotes;
+package sadf.quotes;
 
 import org.overture.codegen.runtime.*;
 
