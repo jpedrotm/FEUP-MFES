@@ -20,7 +20,6 @@ public class Contract {
       final Project p,
       final Celebrity c,
       final Number price,
-      final Globals.Date sDate,
       final Object r) {
 
     durationTime = durationT;
@@ -28,7 +27,7 @@ public class Contract {
     project = p;
     celebrity = c;
     totalPrice = price;
-    startDate = Utils.copy(sDate);
+    startDate = p.getStartDate();
     finalDate = Globals.calculateFinalDate(Utils.copy(startDate), durationTime);
     role = r;
     return;
@@ -40,10 +39,9 @@ public class Contract {
       final Project p,
       final Celebrity c,
       final Number price,
-      final Globals.Date sDate,
       final Object r) {
 
-    cg_init_Contract_1(durationT, b, p, c, price, Utils.copy(sDate), r);
+    cg_init_Contract_1(durationT, b, p, c, price, r);
   }
 
   public Number getDurationTime() {
@@ -59,6 +57,11 @@ public class Contract {
   public Project getProject() {
 
     return project;
+  }
+
+  public Object getRole() {
+
+    return role;
   }
 
   public Celebrity getCelebrity() {

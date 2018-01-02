@@ -102,43 +102,43 @@ public class Celebrity {
 
   public Boolean checkIfContractIsGood(final Contract c) {
 
-    Boolean andResult_13 = false;
+    Boolean andResult_18 = false;
 
     if (c.getDurationTime().longValue() <= maxTime.longValue()) {
-      Boolean andResult_14 = false;
+      Boolean andResult_19 = false;
 
       if (minPrice.longValue() <= c.getTotalPrice().longValue()) {
         if (contracts.size() < maxContracts.longValue()) {
-          andResult_14 = true;
+          andResult_19 = true;
         }
       }
 
-      if (andResult_14) {
-        andResult_13 = true;
+      if (andResult_19) {
+        andResult_18 = true;
       }
     }
 
-    if (andResult_13) {
+    if (andResult_18) {
       return true;
 
     } else {
-      Boolean andResult_15 = false;
+      Boolean andResult_20 = false;
 
       if (c.getDurationTime().longValue() <= maxTime.longValue()) {
-        Boolean andResult_16 = false;
+        Boolean andResult_21 = false;
 
         if (minPrice.longValue() <= c.getTotalPrice().longValue()) {
           if (hasSpaceForNewContract(c)) {
-            andResult_16 = true;
+            andResult_21 = true;
           }
         }
 
-        if (andResult_16) {
-          andResult_15 = true;
+        if (andResult_21) {
+          andResult_20 = true;
         }
       }
 
-      if (andResult_15) {
+      if (andResult_20) {
         return true;
 
       } else {
@@ -175,15 +175,15 @@ public class Celebrity {
     VDMSet set_1 = SeqUtil.elems(Utils.copy(contracts));
     for (Iterator iterator_1 = set_1.iterator(); iterator_1.hasNext(); ) {
       Contract contract = ((Contract) iterator_1.next());
-      Boolean andResult_17 = false;
+      Boolean andResult_22 = false;
 
       if (Globals.compareDates(contract.getStartDate(), Utils.copy(Platform.currentDate))) {
         if (Globals.compareDates(Utils.copy(Platform.currentDate), contract.getFinalDate())) {
-          andResult_17 = true;
+          andResult_22 = true;
         }
       }
 
-      if (andResult_17) {
+      if (andResult_22) {
         setCompResult_1.add(contract);
       }
     }

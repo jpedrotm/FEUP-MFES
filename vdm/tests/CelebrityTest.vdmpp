@@ -12,7 +12,8 @@ instance variables
 	private maxContracts: nat1 := 2;
 	private celebrity: Celebrity := new Celebrity(name,celebTypes,minPrice,maxTime,celebRoles,maxContracts);
 	private brand: Brand := new Brand("Adidas");
-	private project1: Project := new Project("p1", 1, {<ambassador> |-> 1}, {<ambassador> |-> 1000}, {<tech>}, 100);
+	private project1: Project := new Project("p1", 10, {<ambassador> |-> 1}, {<ambassador> |-> 1000}, {<tech>}, 100, mk_Globals`Date(2016,1,1));
+	private project2: Project := new Project("p2", 10, {<ambassador> |-> 1}, {<ambassador> |-> 1000}, {<tech>}, 100, mk_Globals`Date(2016,2,1));
 	private contract1: [Contract] := nil;
 	private contract2: [Contract] := nil;
 	private contract3: [Contract] := nil;
@@ -31,10 +32,11 @@ operations
 	private testAddRemoveContracts: () ==> ()
 		testAddRemoveContracts() == (
 				brand.addProject(project1);
-				contract1 := new Contract(30,brand,project1,celebrity,120,mk_Globals`Date(2016,1,1),<ambassador>);
-				contract2 := new Contract(20,brand,project1,celebrity,120,mk_Globals`Date(2016,1,1),<ambassador>);
-				contract3 := new Contract(15,brand,project1,celebrity,120,mk_Globals`Date(2016,2,1),<ambassador>);
-				contract4 := new Contract(15,brand,project1,celebrity,120,mk_Globals`Date(2016,1,1),<ambassador>);
+				brand.addProject(project2);
+				contract1 := new Contract(30,brand,project1,celebrity,120,<ambassador>);
+				contract2 := new Contract(20,brand,project1,celebrity,120,<ambassador>);
+				contract3 := new Contract(15,brand,project2,celebrity,120,<ambassador>);
+				contract4 := new Contract(15,brand,project1,celebrity,120,<ambassador>);
 		
 				-- Adicionar contratos com contractos_activos < maxContratos
 				assert(celebrity.checkIfContractIsGood(contract1));
@@ -45,12 +47,12 @@ operations
 				celebrity.addContract(contract2);
 				assert(celebrity.getContracts() = [contract2,contract1]);
 				
-				-- Adicionar contrato com contractos_activos >= maxContratos data sem interseção com outros contratos
+				-- Adicionar contrato com contractos_activos >= maxContratos data sem interseï¿½ï¿½o com outros contratos
 				assert(celebrity.checkIfContractIsGood(contract3));
 				celebrity.addContract(contract3);
 				assert(celebrity.getContracts() = [contract2,contract1,contract3]);
 				
-				-- Adicionar contrato com contractos_activos >= maxContratos com data com interseção com outros contratos
+				-- Adicionar contrato com contractos_activos >= maxContratos com data com interseï¿½ï¿½o com outros contratos
 				assert(celebrity.checkIfContractIsGood(contract4) = false);
 				--celebrity.addContract(contract4);
 				--assert(celebrity.getContracts() = [contract2,contract1,contract3]);

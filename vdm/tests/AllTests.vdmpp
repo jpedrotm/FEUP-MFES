@@ -5,7 +5,8 @@ operations
 			new CelebrityTest().main();
 			new ContractTest().main();
 			new BrandTest().main();
-			new PlatformTest().main();
 			new ProjectTest().main();
+			new ProjectTest().main();
+			new PlatformTest().main();
 		);
 end AllTests

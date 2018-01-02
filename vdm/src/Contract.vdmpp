@@ -17,19 +17,20 @@ instance variables
 	inv Globals`compareDates(startDate,finalDate);
 	inv projectExistsInBrand(brand,project);
 operations
-	public Contract: nat1*Brand*Project*Celebrity*nat1*Globals`Date*contractRoles ==> Contract
-			Contract(durationT,b,p,c,price,sDate,r) == (
+	public Contract: nat1*Brand*Project*Celebrity*nat1*contractRoles ==> Contract
+			Contract(durationT,b,p,c,price,r) == (
 			durationTime := durationT;
 			brand := b;
 			project := p;
 			celebrity := c;
 			totalPrice := price;
-			startDate := sDate;
+			startDate := p.getStartDate();
 			finalDate := Globals`calculateFinalDate(startDate,durationTime);
 			role := r;
 			return self)
-			pre durationT > 0 and p in set b.projects and r in set c.getRoles() and price > 0
-			post durationTime = durationT and brand = b and project = p and celebrity = c and totalPrice = price and startDate = sDate;
+
+		pre durationT > 0 and p in set b.projects and r in set c.getRoles() and price > 0 and Globals`compareDates(Platform`currentDate,p.getStartDate())
+		post durationTime = durationT and brand = b and project = p and celebrity = c and totalPrice = price;
 	
 	public pure getDurationTime: () ==> nat1
 		getDurationTime() == return durationTime

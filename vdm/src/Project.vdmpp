@@ -15,6 +15,7 @@ instance variables
 	private maxPricePerRole: budgetPerRole;
 	private desiredCelebTypes: set of Celebrity`celebrityType;
 	private duration: nat1;
+	private startDate: Globals`Date;
 	inv card contracts <= maxNumContracts; -- the project does not have more contracts than desired
 	inv getTotalNumDesiredRoles() <= maxNumContracts;
 	inv getTotalNumBudgetedRoles() <= maxNumContracts;
@@ -23,8 +24,8 @@ instance variables
 
 -- TODO Define instance variables here
 operations
-	public Project: Globals`String*nat1*numForRole*budgetPerRole*set of Celebrity`celebrityType*nat1 ==> Project
-		Project(n,m,d,b,ct,t) == 
+	public Project: Globals`String*nat1*numForRole*budgetPerRole*set of Celebrity`celebrityType*nat1*Globals`Date ==> Project
+		Project(n,m,d,b,ct,t,date) == 
 		(
 			name := n;
 			contracts := {};
@@ -33,10 +34,11 @@ operations
 			maxPricePerRole := b;
 			desiredCelebTypes := ct;
 			duration := t;
+			startDate := date;
 			return self;
 		)
 		pre d <> {|->} and b <> {|->} and ct <> {} and m > 0-- The project must specify desired roles, budget for those roles, and desired celebrity types
-		post name = n and contracts = {} and maxNumContracts = m and desiredNumPerRole = d and maxPricePerRole = b and desiredCelebTypes = ct and duration = t;
+		post name = n and contracts = {} and maxNumContracts = m and desiredNumPerRole = d and maxPricePerRole = b and desiredCelebTypes = ct and duration = t and startDate = date;
 		
 	public getName: () ==> Globals`String
 		getName() == return name
@@ -62,6 +64,10 @@ operations
 	public getDuration: () ==> nat1
 		getDuration() == return duration
 		post RESULT = duration;
+		
+	public pure getStartDate: () ==> Globals`Date
+		getStartDate() == return startDate
+		post RESULT = startDate;
 		
 	-- ----- Desired Roles ----------------------------------------------
 	public getDesiredNumPerRole: () ==> numForRole

@@ -19,7 +19,7 @@ operations
 		testAddAndRemoveProject() == 
 		(
 			dcl brand: Brand := new Brand("name");
-			dcl proj: Project := new Project("projName", 1, {<ambassador> |-> 1}, {<ambassador> |-> 1000}, {<tech>}, 100);
+			dcl proj: Project := new Project("projName", 1, {<ambassador> |-> 1}, {<ambassador> |-> 1000}, {<tech>}, 100, mk_Globals`Date(2016,1,10));
 			
 			brand.addProject(proj);
 			assert(brand.getProjects() = {proj});

@@ -586,7 +586,7 @@ public class Gui implements Consumer<TextIO> {
 		VDMMap roleBudgetMap = MapUtil.map();
 		
 		for (Integer roleIndex : selectedRoles) {
-			Object quote = getRoleQuoteInstance(roleIndex)
+			Object quote = getRoleQuoteInstance(roleIndex);
 			int numForRole = textIO.newIntInputReader().withMinVal(1).withMaxVal(maxContracts).read("How many contracts do you want for the role of " + contractRoles.get(roleIndex));
 			int budgetForRole = textIO.newIntInputReader().withMinVal(1).read("What is your budget for the role of " + contractRoles.get(roleIndex));
 			

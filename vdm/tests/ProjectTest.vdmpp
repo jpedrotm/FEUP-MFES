@@ -4,8 +4,8 @@ types
 values
 -- TODO Define values here
 instance variables
-	platform: Platform := new Platform();
-	proj: Project := new Project("name", 5, {<ambassador> |-> 1, <speaker> |-> 4}, {<ambassador> |-> 1000, <speaker> |-> 500}, {<tech>}, 20);
+
+	proj: Project := new Project("name", 5, {<ambassador> |-> 1, <speaker> |-> 4}, {<ambassador> |-> 1000, <speaker> |-> 500}, {<tech>}, 20, mk_Globals`Date(2016,1,10));
 	brand: Brand := new Brand("name");
 	c1: Celebrity := new Celebrity("name", {<tech>}, 10, 30, {<speaker>}, 5); -- Celebrity that fits all requirements
 	c2: Celebrity := new Celebrity("name", {<tech>}, 10, 30, {<productPlacement>}, 5); -- Celebrity that only fits category requirement
@@ -25,7 +25,7 @@ operations
 	public testCreateProject: () ==> ()
 		testCreateProject() == 
 		(
-			dcl p: Project := new Project("name", 5, {<ambassador> |-> 1, <speaker> |-> 4}, {<ambassador> |-> 1000, <speaker> |-> 500}, {<tech>}, 20);
+			dcl p: Project := new Project("name", 5, {<ambassador> |-> 1, <speaker> |-> 4}, {<ambassador> |-> 1000, <speaker> |-> 500}, {<tech>}, 20, mk_Globals`Date(2016,1,10));
 			assert(p.getName() = "name");
 			assert(p.getContracts() = {});
 			assert(p.getNumContracts() = 0);
@@ -59,20 +59,19 @@ operations
 		testProposeContract() == 
 		(
 			-- project to make contract to fill up c4's contracts
-			dcl proj2: Project := new Project("name2", 5, {<ambassador> |-> 1, <speaker> |-> 4}, {<ambassador> |-> 1000, <speaker> |-> 500}, {<tech>}, 20);
-			platform.addBrand(brand);
+			dcl proj2: Project := new Project("name2", 5, {<ambassador> |-> 1, <speaker> |-> 4}, {<ambassador> |-> 1000, <speaker> |-> 500}, {<tech>}, 20, mk_Globals`Date(2016,1,10));
+
 			brand.addProject(proj);
 			brand.addProject(proj2);
-
 			
-			cont1 := new Contract(proj.getDuration(), brand, proj, c1, 1000, mk_Globals`Date(2016,1,1), <speaker>);
-			cont2 := new Contract(proj.getDuration(), brand, proj, c5, 1000, mk_Globals`Date(2016,1,1), <speaker>);
-			cont3 := new Contract(proj.getDuration(), brand, proj, c6, 1000, mk_Globals`Date(2016,1,1), <speaker>);
-			cont4 := new Contract(proj.getDuration(), brand, proj, c7, 1000, mk_Globals`Date(2016,1,1), <speaker>);
-			cont5 := new Contract(proj.getDuration(), brand, proj2, c7, 1000, mk_Globals`Date(2016,1,1), <speaker>);			
+			cont1 := new Contract(proj.getDuration(), brand, proj, c1, 1000, <speaker>);
+			cont2 := new Contract(proj.getDuration(), brand, proj, c5, 1000, <speaker>);
+			cont3 := new Contract(proj.getDuration(), brand, proj, c6, 1000, <speaker>);
+			cont4 := new Contract(proj.getDuration(), brand, proj, c7, 1000, <speaker>);
+			cont5 := new Contract(proj2.getDuration(), brand, proj2, c7, 1000,<speaker>);		
 
 			assert(proj.proposeContract(cont1, c1) = true);
-			assert(proj2.proposeContract(cont5,c7) = true); -- fill up c4's contract slots
+			assert(proj2.proposeContract(cont5,c7) = true); -- fill up c7's contract slots
 			assert(proj.proposeContract(cont2, c5) = false);
 			assert(proj.proposeContract(cont3, c6) = false);
 			assert(proj.proposeContract(cont4, c7) = false);
@@ -85,11 +84,10 @@ operations
 			testSearchCelebs();
 			testProposeContract();
 		);
-		
-	public static main: () ==> ()
-		main() == (
-			new ProjectTest().testAll();
-		)
+
+	public main: () ==> ()
+		main() == new ProjectTest().testAll();
+
 functions
 -- TODO Define functiones here
 traces

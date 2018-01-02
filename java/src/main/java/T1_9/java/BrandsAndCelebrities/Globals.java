@@ -117,15 +117,15 @@ public class Globals {
 
     Boolean orResult_8 = false;
 
-    Boolean andResult_23 = false;
+    Boolean andResult_31 = false;
 
     if (Utils.equals(Utils.mod(year.longValue(), 4L), 0L)) {
       if (!(Utils.equals(Utils.mod(year.longValue(), 100L), 0L))) {
-        andResult_23 = true;
+        andResult_31 = true;
       }
     }
 
-    if (andResult_23) {
+    if (andResult_31) {
       orResult_8 = true;
     } else {
       orResult_8 = Utils.equals(Utils.mod(year.longValue(), 400L), 4L);
@@ -143,34 +143,34 @@ public class Globals {
     } else {
       Boolean orResult_10 = false;
 
-      Boolean andResult_24 = false;
+      Boolean andResult_32 = false;
 
       if (Utils.equals(d1.year, d2.year)) {
         if (d1.month.longValue() < d2.month.longValue()) {
-          andResult_24 = true;
+          andResult_32 = true;
         }
       }
 
-      if (andResult_24) {
+      if (andResult_32) {
         orResult_10 = true;
       } else {
-        Boolean andResult_25 = false;
+        Boolean andResult_33 = false;
 
         if (Utils.equals(d1.year, d2.year)) {
-          Boolean andResult_26 = false;
+          Boolean andResult_34 = false;
 
           if (Utils.equals(d1.month, d2.month)) {
             if (d1.day.longValue() <= d2.day.longValue()) {
-              andResult_26 = true;
+              andResult_34 = true;
             }
           }
 
-          if (andResult_26) {
-            andResult_25 = true;
+          if (andResult_34) {
+            andResult_33 = true;
           }
         }
 
-        orResult_10 = andResult_25;
+        orResult_10 = andResult_33;
       }
 
       orResult_9 = orResult_10;
@@ -221,20 +221,20 @@ public class Globals {
 
     public String toString() {
 
-      return day+"/"+month+"/"+year;
+      return "mk_Globals`Date" + Utils.formatFields(year, month, day);
     }
   }
 
   public static Boolean inv_Date(final Date d) {
 
-    Boolean andResult_27 = false;
+    Boolean andResult_35 = false;
 
     if (d.month.longValue() <= 12L) {
       if (d.day.longValue() <= DaysOfMonth(d.year, d.month).longValue()) {
-        andResult_27 = true;
+        andResult_35 = true;
       }
     }
 
-    return andResult_27;
+    return andResult_35;
   }
 }

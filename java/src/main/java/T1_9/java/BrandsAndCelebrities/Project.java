@@ -12,6 +12,7 @@ public class Project {
   private VDMMap maxPricePerRole;
   private VDMSet desiredCelebTypes;
   private Number duration;
+  private Globals.Date startDate;
 
   public void cg_init_Project_1(
       final String n,
@@ -19,7 +20,8 @@ public class Project {
       final VDMMap d,
       final VDMMap b,
       final VDMSet ct,
-      final Number t) {
+      final Number t,
+      final Globals.Date date) {
 
     name = n;
     contracts = SetUtil.set();
@@ -28,6 +30,7 @@ public class Project {
     maxPricePerRole = Utils.copy(b);
     desiredCelebTypes = Utils.copy(ct);
     duration = t;
+    startDate = Utils.copy(date);
     return;
   }
 
@@ -37,9 +40,10 @@ public class Project {
       final VDMMap d,
       final VDMMap b,
       final VDMSet ct,
-      final Number t) {
+      final Number t,
+      final Globals.Date date) {
 
-    cg_init_Project_1(n, m, Utils.copy(d), Utils.copy(b), Utils.copy(ct), t);
+    cg_init_Project_1(n, m, Utils.copy(d), Utils.copy(b), Utils.copy(ct), t, Utils.copy(date));
   }
 
   public String getName() {
@@ -70,6 +74,11 @@ public class Project {
   public Number getDuration() {
 
     return duration;
+  }
+
+  public Globals.Date getStartDate() {
+
+    return Utils.copy(startDate);
   }
 
   public VDMMap getDesiredNumPerRole() {
@@ -161,15 +170,15 @@ public class Project {
     VDMSet set_3 = Utils.copy(celebs);
     for (Iterator iterator_3 = set_3.iterator(); iterator_3.hasNext(); ) {
       Celebrity celeb = ((Celebrity) iterator_3.next());
-      Boolean andResult_45 = false;
+      Boolean andResult_55 = false;
 
       if (!(Utils.empty(SetUtil.intersect(celeb.getRoles(), getDesiredRoles())))) {
         if (!(Utils.empty(SetUtil.intersect(celeb.getType(), getDesiredCelebTypes())))) {
-          andResult_45 = true;
+          andResult_55 = true;
         }
       }
 
-      if (andResult_45) {
+      if (andResult_55) {
         setCompResult_2.add(celeb);
       }
     }
@@ -178,15 +187,15 @@ public class Project {
 
   public Boolean proposeContract(final Contract contract, final Celebrity celeb) {
 
-    Boolean andResult_46 = false;
+    Boolean andResult_56 = false;
 
     if (celeb.hasSpaceForNewContract(contract)) {
       if (celeb.checkIfContractIsGood(contract)) {
-        andResult_46 = true;
+        andResult_56 = true;
       }
     }
 
-    if (!(andResult_46)) {
+    if (!(andResult_56)) {
       return false;
     }
 
@@ -214,6 +223,8 @@ public class Project {
         + Utils.toString(desiredCelebTypes)
         + ", duration := "
         + Utils.toString(duration)
+        + ", startDate := "
+        + Utils.toString(startDate)
         + "}";
   }
 }

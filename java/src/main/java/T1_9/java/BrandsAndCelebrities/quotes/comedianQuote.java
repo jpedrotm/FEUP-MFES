@@ -1,5 +1,6 @@
 package T1_9.java.BrandsAndCelebrities.quotes;
 
+
 import org.overture.codegen.runtime.*;
 
 @SuppressWarnings("all")
