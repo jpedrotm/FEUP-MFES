@@ -97,31 +97,31 @@ public class Gui implements Consumer<TextIO> {
 		terminal.println();
 	}
 
-	public void printBold(TextIO textIo, SwingTextTerminal terminal, TerminalProperties<?> props, String text) {
+	public void printBold(TextIO textIO, SwingTextTerminal terminal, TerminalProperties<?> props, String text) {
 		props.setPromptBold(true);
 		terminal.rawPrint(text);
 		props.setPromptBold(false);
 	}
 
-	public void printBoldLn(TextIO textIo, SwingTextTerminal terminal, TerminalProperties<?> props, String text) {
+	public void printBoldLn(TextIO textIO, SwingTextTerminal terminal, TerminalProperties<?> props, String text) {
 		props.setPromptBold(true);
 		terminal.println(text);
 		props.setPromptBold(false);
 	}
 
-	public void printUnderline(TextIO textIo, SwingTextTerminal terminal, TerminalProperties<?> props, String text) {
+	public void printUnderline(TextIO textIO, SwingTextTerminal terminal, TerminalProperties<?> props, String text) {
 		props.setPromptUnderline(true);
 		terminal.rawPrint(text);
 		props.setPromptUnderline(false);
 	}
 
-	public void printUnderlineLn(TextIO textIo, SwingTextTerminal terminal, TerminalProperties<?> props, String text) {
+	public void printUnderlineLn(TextIO textIO, SwingTextTerminal terminal, TerminalProperties<?> props, String text) {
 		props.setPromptUnderline(true);
 		terminal.println(text);
 		props.setPromptUnderline(false);
 	}
 
-	public void printBoldUnderline(TextIO textIo, SwingTextTerminal terminal, TerminalProperties<?> props,
+	public void printBoldUnderline(TextIO textIO, SwingTextTerminal terminal, TerminalProperties<?> props,
 			String text) {
 		props.setPromptUnderline(true);
 		props.setPromptBold(true);
@@ -130,13 +130,26 @@ public class Gui implements Consumer<TextIO> {
 		props.setPromptUnderline(false);
 	}
 
-	public void printBoldUnderlineLn(TextIO textIo, SwingTextTerminal terminal, TerminalProperties<?> props,
+	public void printBoldUnderlineLn(TextIO textIO, SwingTextTerminal terminal, TerminalProperties<?> props,
 			String text) {
 		props.setPromptUnderline(true);
 		props.setPromptBold(true);
 		terminal.println(text);
 		props.setPromptBold(false);
 		props.setPromptUnderline(false);
+	}
+
+	public void printMap(TextIO textIO, SwingTextTerminal terminal, TerminalProperties<?> props, VDMMap map) {
+		for (Object key : map.keySet()) {
+			terminal.println("\t" + key.toString().toString().replace("<", "").replace(">", "") + ": " + map.get(key));
+		}
+	}
+
+	public void printSet(TextIO textIO, SwingTextTerminal terminal, TerminalProperties<?> props, VDMSet set) {
+		for (Iterator iterator = set.iterator(); iterator.hasNext();) {
+			Object element = iterator.next();
+			terminal.println("\t" + element.toString().replace("<", "").replace(">", ""));
+		}
 	}
 
 	public void mainMenuView(TextIO textIO, SwingTextTerminal terminal, TerminalProperties<?> props) {
@@ -390,7 +403,7 @@ public class Gui implements Consumer<TextIO> {
 		return set;
 	}
 
-	public Object getRoleQuoteInstance(int index){
+	public Object getRoleQuoteInstance(int index) {
 		switch (index) {
 		case 0:
 			return ambassadorQuote.getInstance();
@@ -404,6 +417,27 @@ public class Gui implements Consumer<TextIO> {
 			return digitalInfluenceQuote.getInstance();
 		case 5:
 			return productPlacementQuote.getInstance();
+		default:
+			return null;
+		}
+	}
+
+	public Object getTypeQuoteInstance(int index) {
+		switch (index) {
+		case 0:
+			return sportQuote.getInstance();
+		case 1:
+			return actorQuote.getInstance();
+		case 2:
+			return comedianQuote.getInstance();
+		case 3:
+			return techQuote.getInstance();
+		case 4:
+			return musicQuote.getInstance();
+		case 5:
+			return cookQuote.getInstance();
+		case 6:
+			return magicQuote.getInstance();
 		default:
 			return null;
 		}
@@ -481,10 +515,6 @@ public class Gui implements Consumer<TextIO> {
 		printBold(textIO, terminal, props, "Name: ");
 		terminal.rawPrint(brand.getName() + "\n\n");
 
-		if (brand.getProjects().isEmpty()) {
-			terminal.println("There are no projects associated to this brand");
-		}
-
 		terminal.println("1 - See brand's projects.");
 		terminal.println("2 - Back.");
 		terminal.println("3 - Main Menu.");
@@ -507,11 +537,36 @@ public class Gui implements Consumer<TextIO> {
 
 	public void projectListView(TextIO textIO, SwingTextTerminal terminal, TerminalProperties<?> props, Brand brand) {
 		setSubtitle(textIO, terminal, props, "Brand: " + brand.getName());
-		printBold(textIO, terminal, props, "Projects");
+		printBold(textIO, terminal, props, "Projects\n");
 
-		int index = 0;
 		VDMSet projects = brand.getProjects();
 
+		if (projects.isEmpty()) {
+			terminal.println("\nThere are no Projects\n");
+			terminal.println("1 - Add a new project");
+			terminal.println("2 - Back");
+			terminal.println("3 - Main Menu");
+
+			int option = textIO.newIntInputReader().withMinVal(1).withMaxVal(4).read("Choose an option: ");
+
+			switch (option) {
+			case 1:
+				createProjectView(textIO, terminal, props, brand);
+				break;
+
+			case 2:
+				brandDrilldownView(textIO, terminal, props, brand);
+				break;
+
+			case 3:
+				mainMenuView(textIO, terminal, props);
+				break;
+			}
+
+			return;
+		}
+
+		int index = 0;
 		for (Iterator iterator = projects.iterator(); iterator.hasNext();) {
 			Project project = (Project) iterator.next();
 			terminal.println((1 + index++) + " - " + project.getName());
@@ -528,7 +583,7 @@ public class Gui implements Consumer<TextIO> {
 		switch (option) {
 		case 1:
 			int chosenProject = textIO.newIntInputReader().withMinVal(1).withMaxVal(index)
-					.read("Insert brand number: ");
+			.read("Insert project number: ");
 			Iterator iterator = projects.iterator();
 			Project project = null;
 			for (int i = 0; i < chosenProject; i++) {
@@ -555,12 +610,137 @@ public class Gui implements Consumer<TextIO> {
 	public void projectDrilldownView(TextIO textIO, SwingTextTerminal terminal, TerminalProperties<?> props,
 			Brand brand, Project project) {
 		setSubtitle(textIO, terminal, props, "Brand: " + brand.getName() + "\nProject: " + project.getName());
-		printBold(textIO, terminal, props, "Name :");
+		printBold(textIO, terminal, props, "Name: ");
 		terminal.rawPrint(project.getName() + "\n");
+
 		printBold(textIO, terminal, props, "Maximum number of contracts: ");
 		terminal.rawPrint(project.getMaxNumContracts() + "\n");
-		printBold(textIO, terminal, props, "Desired Roles: ");
-		terminal.rawPrint(project.getDesiredRoles().toString() + "\n");
+
+		printBold(textIO, terminal, props, "Desired Roles:\n");
+		printMap(textIO, terminal, props, project.getDesiredNumPerRole());
+
+		printBold(textIO, terminal, props, "Budget per role ($):\n ");
+		printMap(textIO, terminal, props, project.getBudgetPerRole());
+
+		printBold(textIO, terminal, props, "Desired celebrity types:\n ");
+		printSet(textIO, terminal, props, project.getDesiredCelebTypes());
+
+		printBold(textIO, terminal, props, "Duration: ");
+		terminal.rawPrint(project.getDuration() + " days\n");
+
+		printBold(textIO, terminal, props, "Start date: ");
+		terminal.rawPrint(project.getStartDate() + "\n");
+
+		terminal.println("1 - List contracts");
+		terminal.println("2 - Back");
+		terminal.println("3 - Main Menu");
+
+		int option = textIO.newIntInputReader().withMinVal(1).withMaxVal(3).read("Choose an option: ");
+
+		switch (option) {
+		case 1:
+			contractListView(textIO, terminal, props, brand, project);
+		case 2:
+			projectListView(textIO, terminal, props, brand);
+		case 3:
+			mainMenuView(textIO, terminal, props);
+		}
+	}
+
+	public void contractListView(TextIO textIO, SwingTextTerminal terminal, TerminalProperties<?> props, Brand brand,
+			Project project) {
+		setSubtitle(textIO, terminal, props,
+				"Brand: " + brand.getName() + "\nProject: " + project.getName() + "\nContracts");
+		VDMSet contracts = project.getContracts();
+		if (contracts.isEmpty()) {
+			terminal.println("There are no contracts yet!");
+		} else {
+
+			int index = 0;
+			for (Iterator iterator = contracts.iterator(); iterator.hasNext();) {
+				Contract contract = (Contract) iterator.next();
+				terminal.rawPrint((1 + index++) + " - " + contract.getCelebrity() + " - " + contract.getTotalPrice()
+				+ "$ - role - " + contract.getRole().toString().replace("<", "").replace(">", "")
+				+ "\n\tStarting at " + contract.getStartDate() + "and expiring at " + contract.getFinalDate()
+				+ "\n");
+			}
+
+			terminal.println("1 - Add a new contract");
+			terminal.println("2 - Back");
+			terminal.println("3 - Main Menu");
+		}
+
+		int option = textIO.newIntInputReader().withMinVal(1).withMaxVal(3).read("Choose an option: ");
+		switch (option) {
+		case 1:
+			createContractView(textIO, terminal, props, brand, project);
+			return;
+		case 2:
+			projectDrilldownView(textIO, terminal, props, brand, project);
+			return;
+		case 3:
+			mainMenuView(textIO, terminal, props);
+			return;
+		}
+	}
+
+	public void createContractView(TextIO textIO, SwingTextTerminal terminal, TerminalProperties<?> props, Brand brand,
+			Project project) {
+		setSubtitle(textIO, terminal, props,
+				"Brand: " + brand.getName() + "\nProject: " + project.getName() + "\nNew Contract");
+
+		VDMSet celebrities = project.getAppropriateCelebs(platform.getCelebs());
+		if (celebrities.isEmpty()) {
+			terminal.println("There are no celebrities that fit your requirements!\n");
+			terminal.println("1 - Back");
+			terminal.println("2 - Main Menu");
+
+			int option = textIO.newIntInputReader().withMinVal(1).withMaxVal(2).read("Choose an option: ");
+			switch (option) {
+			case 1:
+				contractListView(textIO, terminal, props, brand, project);
+				return;
+			case 2:
+				mainMenuView(textIO, terminal, props);
+				return;
+			}
+		}
+
+		int index = 0;
+		for (Iterator iterator = celebrities.iterator(); iterator.hasNext();) {
+			Celebrity celeb = (Celebrity) iterator.next();
+			terminal.println((1 + index++) + " - " + celeb.getName());
+		}
+
+		terminal.println("1 - Create a contract");
+		terminal.println("2 - Back");
+		terminal.println("3 - Main Menu");
+
+		int option = textIO.newIntInputReader().withMinVal(1).withMaxVal(3).read("Choose an option");
+
+		switch (option) {
+		case 1:
+			int chosenCelebrity = textIO.newIntInputReader().withMinVal(1).withMaxVal(celebrities.size())
+			.read("Choosen celebrity's number: ");
+
+			Iterator iterator = celebrities.iterator();
+			Celebrity celeb = null;
+			for (int i = 0; i < chosenCelebrity; i++)
+				celeb = (Celebrity) iterator.next();
+
+			proposeContractView(textIO, terminal, props, brand, project, celeb);
+
+		case 2:
+			contractListView(textIO, terminal, props, brand, project);
+
+		case 3:
+			mainMenuView(textIO, terminal, props);
+		}
+	}
+
+	public void proposeContractView(TextIO textIO, SwingTextTerminal terminal, TerminalProperties<?> props, Brand brand,
+			Project project, Celebrity celeb) {
+
 	}
 
 	public void createProjectView(TextIO textIO, SwingTextTerminal terminal, TerminalProperties<?> props, Brand brand) {
@@ -578,29 +758,56 @@ public class Gui implements Consumer<TextIO> {
 		}
 		String desiredRoles = textIO.newStringInputReader().read("Select the desired roles (e.g.: 1, 3, 4): ");
 		String[] tmp = desiredRoles.split(",");
-		for (String index : tmp){
-			selectedRoles.add(Integer.parseInt(index.trim()));
-		}	
-		
+		for (String index : tmp) {
+			int role = Integer.parseInt(index.trim()) - 1;
+
+			if (!selectedRoles.contains(role))
+				selectedRoles.add(role);
+		}
+
 		VDMMap roleNumMap = MapUtil.map();
 		VDMMap roleBudgetMap = MapUtil.map();
-		
+		VDMSet typesSet = SetUtil.set();
+
 		for (Integer roleIndex : selectedRoles) {
 			Object quote = getRoleQuoteInstance(roleIndex);
-			int numForRole = textIO.newIntInputReader().withMinVal(1).withMaxVal(maxContracts).read("How many contracts do you want for the role of " + contractRoles.get(roleIndex));
-			int budgetForRole = textIO.newIntInputReader().withMinVal(1).read("What is your budget for the role of " + contractRoles.get(roleIndex));
-			
+			int numForRole = textIO.newIntInputReader().withMinVal(1).withMaxVal(maxContracts)
+					.read("How many contracts do you want for the role of " + contractRoles.get(roleIndex));
+			int budgetForRole = textIO.newIntInputReader().withMinVal(1)
+					.read("What is your budget for the role of " + contractRoles.get(roleIndex));
+
 			roleNumMap.put(quote, numForRole);
 			roleBudgetMap.put(quote, budgetForRole);
 		}
-		
+
 		terminal.println("Celebrity types: ");
 		for (int i = 0; i < contractRoles.size(); i++) {
 			terminal.println((1 + i) + " - " + celebrityTypes.get(i));
 		}
-		
+		String desiredTypes = textIO.newStringInputReader().read("Select the desired types (e.g.: 1, 3, 4): ");
+		tmp = desiredTypes.split(",");
+		for (String index : tmp) {
+			int type = Integer.parseInt(index.trim()) - 1;
 
-		desiredRoles = textIO.newStringInputReader().read("Select the desired types of celebrity (e.g.: 1, 3, 4): ");
+			if (!selectedTypes.contains(type))
+				selectedTypes.add(type);
+		}
+
+		for (Integer roleIndex : selectedTypes) {
+			typesSet.add(getTypeQuoteInstance(roleIndex));
+		}
+
+		int duration = textIO.newIntInputReader().withMinVal(1).read("What is the duration of the project? (in days)");
+		String[] dateInfo = textIO.newStringInputReader()
+				.read("What is the starting date of your project? (YYYY/MM/DD)").split("/");
+		Globals.Date date = new Globals.Date(Integer.parseInt(dateInfo[0].trim()), Integer.parseInt(dateInfo[1].trim()),
+				Integer.parseInt(dateInfo[2].trim()));
+
+		Project proj = new Project(projectName, maxContracts, roleNumMap, roleBudgetMap, typesSet, duration, date);
+		brand.addProject(proj);
+
+		textIO.newStringInputReader().withDefaultValue("ok").read("Project Created!\nPress Enter to continue!");
+		brandDrilldownView(textIO, terminal, props, brand);
 	}
 
 	public void stepView(TextIO textIO, SwingTextTerminal terminal, TerminalProperties<?> props) {
