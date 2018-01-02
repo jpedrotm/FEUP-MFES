@@ -53,14 +53,6 @@ public class Gui implements Consumer<TextIO> {
 		platform.createBrand("name");
 	}
 
-	public void removeBrandFromPlatform() {
-		// Mostra lista de brands numeradas
-		// Pergunta o n�mero da que quer apagar
-		// Se for v�lido apaga (� preciso apagar os projetos e os contratos
-		// associados a
-		// marca)
-	}
-
 	public void addCelebrityToPlatform(String name, VDMSet celebsTypes, int minP, int maxT, VDMSet rs, int maxC) {
 		platform.createCelebrity(name, celebsTypes, minP, maxT, rs, maxC);
 	}
@@ -474,14 +466,15 @@ public class Gui implements Consumer<TextIO> {
 
 		terminal.println("\n");
 		terminal.println("1 - See brand.");
-		terminal.println("2 - Back.");
-		terminal.println("3 - Main Menu.");
+		terminal.println("2 - Delete brand.");
+		terminal.println("3 - Back.");
+		terminal.println("4 - Main Menu.");
 
-		int option = textIO.newIntInputReader().withMinVal(1).withMaxVal(3).read("Choose an option: ");
+		int option = textIO.newIntInputReader().withMinVal(1).withMaxVal(4).read("Choose an option: ");
 
 		switch (option) {
 		case 1:
-			int chosenBrand = textIO.newIntInputReader().withMinVal(1).withMaxVal(index).read("Insert brand number: ");
+			int chosenBrand = textIO.newIntInputReader().withMinVal(1).withMaxVal(index).read("Enter brand number: ");
 			Iterator iterator = brands.iterator();
 			Brand brand = null;
 			for (int i = 0; i < chosenBrand; i++) {
@@ -492,10 +485,21 @@ public class Gui implements Consumer<TextIO> {
 			break;
 
 		case 2:
+			int toDelete = textIO.newIntInputReader().withMinVal(1).withMaxVal(index).read("Enter brand number: ");
+			Iterator it = brands.iterator();
+			Brand b = null;
+			for (int i = 0; i < toDelete; i++) {
+				if (it.hasNext())
+					b = (Brand) it.next();
+			}
+			platform.removeBrand(b);
+			listBrandsView(textIO, terminal, props);
+			break;
+		case 3:
 			brandView(textIO, terminal, props);
 			break;
 
-		case 3:
+		case 4:
 			mainMenuView(textIO, terminal, props);
 			break;
 		}
@@ -574,16 +578,17 @@ public class Gui implements Consumer<TextIO> {
 
 		terminal.println("\n");
 		terminal.println("1 - See project");
-		terminal.println("2 - Add a new project");
-		terminal.println("3 - Back");
-		terminal.println("4 - Main Menu");
+		terminal.println("2 - Delete project");
+		terminal.println("3 - Add a new project");
+		terminal.println("4 - Back");
+		terminal.println("5 - Main Menu");
 
-		int option = textIO.newIntInputReader().withMinVal(1).withMaxVal(4).read("Choose an option: ");
+		int option = textIO.newIntInputReader().withMinVal(1).withMaxVal(5).read("Choose an option: ");
 
 		switch (option) {
 		case 1:
 			int chosenProject = textIO.newIntInputReader().withMinVal(1).withMaxVal(index)
-			.read("Insert project number: ");
+					.read("Insert project number: ");
 			Iterator iterator = projects.iterator();
 			Project project = null;
 			for (int i = 0; i < chosenProject; i++) {
@@ -594,14 +599,26 @@ public class Gui implements Consumer<TextIO> {
 			break;
 
 		case 2:
-			createProjectView(textIO, terminal, props, brand);
+			int projIndex = textIO.newIntInputReader().withMinVal(1).withMaxVal(index).read("Insert project number: ");
+			Iterator it = projects.iterator();
+			Project p = null;
+			for (int i = 0; i < projIndex; i++) {
+				if (it.hasNext())
+					p = (Project) it.next();
+			}
+			brand.removeProject(p);
+			projectListView(textIO, terminal, props, brand);
 			break;
 
 		case 3:
-			brandDrilldownView(textIO, terminal, props, brand);
+			createProjectView(textIO, terminal, props, brand);
 			break;
 
 		case 4:
+			brandDrilldownView(textIO, terminal, props, brand);
+			break;
+
+		case 5:
 			mainMenuView(textIO, terminal, props);
 			break;
 		}
@@ -630,8 +647,9 @@ public class Gui implements Consumer<TextIO> {
 
 		printBold(textIO, terminal, props, "Start date: ");
 		terminal.rawPrint(project.getStartDate() + "\n");
+		terminal.println();
 
-		terminal.println("1 - List contracts");
+		terminal.println("\n1 - List contracts");
 		terminal.println("2 - Back");
 		terminal.println("3 - Main Menu");
 
@@ -659,16 +677,16 @@ public class Gui implements Consumer<TextIO> {
 			int index = 0;
 			for (Iterator iterator = contracts.iterator(); iterator.hasNext();) {
 				Contract contract = (Contract) iterator.next();
-				terminal.rawPrint((1 + index++) + " - " + contract.getCelebrity() + " - " + contract.getTotalPrice()
-				+ "$ - role - " + contract.getRole().toString().replace("<", "").replace(">", "")
-				+ "\n\tStarting at " + contract.getStartDate() + "and expiring at " + contract.getFinalDate()
-				+ "\n");
+				terminal.rawPrint((1 + index++) + " - " + contract.getCelebrity().getName() + " - "
+						+ contract.getTotalPrice() + "$ - role - "
+						+ contract.getRole().toString().replace("<", "").replace(">", "") + "\n\tStarting at "
+						+ contract.getStartDate() + "and expiring at " + contract.getFinalDate() + "\n\n");
 			}
-
-			terminal.println("1 - Add a new contract");
-			terminal.println("2 - Back");
-			terminal.println("3 - Main Menu");
 		}
+
+		terminal.println("1 - Add a new contract");
+		terminal.println("2 - Back");
+		terminal.println("3 - Main Menu");
 
 		int option = textIO.newIntInputReader().withMinVal(1).withMaxVal(3).read("Choose an option: ");
 		switch (option) {
@@ -689,6 +707,7 @@ public class Gui implements Consumer<TextIO> {
 		setSubtitle(textIO, terminal, props,
 				"Brand: " + brand.getName() + "\nProject: " + project.getName() + "\nNew Contract");
 
+		printBold(textIO, terminal, props, "Celebrities that fullfill the requirements\n");
 		VDMSet celebrities = project.getAppropriateCelebs(platform.getCelebs());
 		if (celebrities.isEmpty()) {
 			terminal.println("There are no celebrities that fit your requirements!\n");
@@ -712,7 +731,7 @@ public class Gui implements Consumer<TextIO> {
 			terminal.println((1 + index++) + " - " + celeb.getName());
 		}
 
-		terminal.println("1 - Create a contract");
+		terminal.println("\n1 - Create a contract");
 		terminal.println("2 - Back");
 		terminal.println("3 - Main Menu");
 
@@ -721,7 +740,7 @@ public class Gui implements Consumer<TextIO> {
 		switch (option) {
 		case 1:
 			int chosenCelebrity = textIO.newIntInputReader().withMinVal(1).withMaxVal(celebrities.size())
-			.read("Choosen celebrity's number: ");
+					.read("Chosen celebrity's number: ");
 
 			Iterator iterator = celebrities.iterator();
 			Celebrity celeb = null;
@@ -740,7 +759,46 @@ public class Gui implements Consumer<TextIO> {
 
 	public void proposeContractView(TextIO textIO, SwingTextTerminal terminal, TerminalProperties<?> props, Brand brand,
 			Project project, Celebrity celeb) {
+		setSubtitle(textIO, terminal, props,
+				"Brand: " + brand.getName() + "\nProject: " + project.getName() + "\nNew Contract");
 
+		printBoldLn(textIO, terminal, props, "Proposing contract to: " + celeb.getName());
+		VDMSet availableRoles = SetUtil.intersect(project.getDesiredRoles(), celeb.getRoles());
+
+		int index = 0;
+		for (Iterator iterator = availableRoles.iterator(); iterator.hasNext();) {
+			Object role = iterator.next();
+			terminal.println((1 + index++) + " - " + role.toString().replace("<", "").replace(">", ""));
+		}
+
+		int roleIndex = textIO.newIntInputReader().withMinVal(1).withMaxVal(availableRoles.size())
+				.read("Choose a role: ");
+
+		Object role = null;
+		Iterator iterator = availableRoles.iterator();
+		for (int i = 0; i < roleIndex; i++) {
+			if (iterator.hasNext())
+				role = iterator.next();
+		}
+
+		int maxPayment = project.getMaxPriceForRole(role).intValue();
+		int minPayment = celeb.getMinPrice().intValue();
+
+		if (minPayment <= maxPayment) {
+			int price = textIO.newIntInputReader().withMinVal(minPayment).withMaxVal(maxPayment)
+					.read("Enter the payment amount (the minimum fee of the celebrity is " + minPayment
+							+ " and your budget for the role is " + maxPayment + ": ");
+
+			Contract contract = new Contract(project.getDuration(), brand, project, celeb, price, role);
+			char confirmation = textIO.newCharInputReader().withInlinePossibleValues('y', 'n', 'Y', 'N')
+					.read("Are you sure you want to create a contract with " + celeb.getName());
+			if (confirmation == 'Y' || confirmation == 'y') {
+				celeb.addContract(contract);
+				project.addContract(contract);
+				textIO.newStringInputReader().withDefaultValue("ok").read("Project Created!\nPress Enter to continue!");
+			}
+			contractListView(textIO, terminal, props, brand, project);
+		}
 	}
 
 	public void createProjectView(TextIO textIO, SwingTextTerminal terminal, TerminalProperties<?> props, Brand brand) {
@@ -768,11 +826,14 @@ public class Gui implements Consumer<TextIO> {
 		VDMMap roleNumMap = MapUtil.map();
 		VDMMap roleBudgetMap = MapUtil.map();
 		VDMSet typesSet = SetUtil.set();
-
+		int availableContracts = maxContracts;
 		for (Integer roleIndex : selectedRoles) {
 			Object quote = getRoleQuoteInstance(roleIndex);
-			int numForRole = textIO.newIntInputReader().withMinVal(1).withMaxVal(maxContracts)
-					.read("How many contracts do you want for the role of " + contractRoles.get(roleIndex));
+			int numForRole = textIO.newIntInputReader().withMinVal(1).withMaxVal(availableContracts)
+					.read("How many contracts do you want for the role of " + contractRoles.get(roleIndex)
+					+ " (max. " + availableContracts + ", min. 1)");
+			availableContracts -= numForRole;
+
 			int budgetForRole = textIO.newIntInputReader().withMinVal(1)
 					.read("What is your budget for the role of " + contractRoles.get(roleIndex));
 
@@ -798,10 +859,15 @@ public class Gui implements Consumer<TextIO> {
 		}
 
 		int duration = textIO.newIntInputReader().withMinVal(1).read("What is the duration of the project? (in days)");
-		String[] dateInfo = textIO.newStringInputReader()
-				.read("What is the starting date of your project? (YYYY/MM/DD)").split("/");
-		Globals.Date date = new Globals.Date(Integer.parseInt(dateInfo[0].trim()), Integer.parseInt(dateInfo[1].trim()),
-				Integer.parseInt(dateInfo[2].trim()));
+		ArrayList<String> dateInfo;
+		do {
+		String date = textIO.newStringInputReader()
+				.read("What is the starting date of your project? (YYYY/MM/DD)");
+		dateInfo = new ArrayList<String>(Arrays.asList(date.split("/")));
+		} while (dateInfo.size() < 3);
+		
+		Globals.Date date = new Globals.Date(Integer.parseInt(dateInfo.get(0).trim()), Integer.parseInt(dateInfo.get(1).trim()),
+				Integer.parseInt(dateInfo.get(2).trim()));
 
 		Project proj = new Project(projectName, maxContracts, roleNumMap, roleBudgetMap, typesSet, duration, date);
 		brand.addProject(proj);
