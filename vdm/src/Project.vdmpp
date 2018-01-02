@@ -109,10 +109,9 @@ operations
 	public getMaxPriceForRole: contractRole ==> nat
 		getMaxPriceForRole(role) ==
 		(
-			if role not in set dom maxPricePerRole
-			then return 0
-			else return maxPricePerRole(role);
+			return maxPricePerRole(role);
 		)
+		pre role in set dom maxPricePerRole
 		post RESULT >= 0;
 		
 	public getBudgetPerRole: () ==> budgetPerRole

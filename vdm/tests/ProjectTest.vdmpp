@@ -4,6 +4,7 @@ types
 values
 -- TODO Define values here
 instance variables
+	platform: Platform := new Platform();
 	proj: Project := new Project("name", 5, {<ambassador> |-> 1, <speaker> |-> 4}, {<ambassador> |-> 1000, <speaker> |-> 500}, {<tech>}, 20);
 	brand: Brand := new Brand("name");
 	c1: Celebrity := new Celebrity("name", {<tech>}, 10, 30, {<speaker>}, 5); -- Celebrity that fits all requirements
@@ -13,11 +14,11 @@ instance variables
 	c5: Celebrity := new Celebrity("name", {<tech>}, 10, 10, {<speaker>}, 5); -- Celebrity that has smaller maximum period
 	c6: Celebrity := new Celebrity("name", {<tech>}, 5000, 30, {<speaker>}, 5); -- Celebrity that has bigger minimum price
 	c7: Celebrity := new Celebrity("name", {<tech>}, 10, 30, {<speaker>}, 1); -- Celebrity that already has contracts filled
-	cont1: Contract;
-	cont2: Contract;
-	cont3: Contract;
-	cont4: Contract;
-	cont5: Contract;
+	cont1: [Contract] := nil;
+	cont2: [Contract] := nil;
+	cont3: [Contract] := nil;
+	cont4: [Contract] := nil;
+	cont5: [Contract] := nil;
 	
 -- TODO Define instance variables here
 operations
@@ -42,7 +43,6 @@ operations
 			assert(p.getDesiredCelebTypes() = {<tech>});
 			assert(p.getDuration() = 20);
 			assert(p.getDesiredNumForRole(<productPlacement>) = 0);
-			assert(p.getMaxPriceForRole(<productPlacement>) = 0);
 		);
 		
 	public testSearchCelebs: () ==> ()
@@ -60,6 +60,7 @@ operations
 		(
 			-- project to make contract to fill up c4's contracts
 			dcl proj2: Project := new Project("name2", 5, {<ambassador> |-> 1, <speaker> |-> 4}, {<ambassador> |-> 1000, <speaker> |-> 500}, {<tech>}, 20);
+			platform.addBrand(brand);
 			brand.addProject(proj);
 			brand.addProject(proj2);
 
@@ -76,6 +77,19 @@ operations
 			assert(proj.proposeContract(cont3, c6) = false);
 			assert(proj.proposeContract(cont4, c7) = false);
 		);
+		
+	public testAll: () ==> ()
+		testAll() == 
+		(
+			testCreateProject();
+			testSearchCelebs();
+			testProposeContract();
+		);
+		
+	public static main: () ==> ()
+		main() == (
+			new ProjectTest().testAll();
+		)
 functions
 -- TODO Define functiones here
 traces

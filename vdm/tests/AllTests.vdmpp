@@ -6,5 +6,6 @@ operations
 			new ContractTest().main();
 			new BrandTest().main();
 			new PlatformTest().main();
+			new ProjectTest().main();
 		);
 end AllTests
