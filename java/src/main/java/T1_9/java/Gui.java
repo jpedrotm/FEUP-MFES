@@ -157,7 +157,7 @@ public class Gui implements Consumer<TextIO> {
 		props.setInputColor("blue");
 		props.setInputItalic(true);
 
-		int option = textIO.newIntInputReader().withMinVal(1).withMaxVal(3).read("Choose an option");
+		int option = textIO.newIntInputReader().withMinVal(1).withMaxVal(4).read("Choose an option");
 
 		switch (option) {
 		case 1:
