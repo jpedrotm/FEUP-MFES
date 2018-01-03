@@ -1,8 +1,6 @@
 class CelebrityTest is subclass of Test
-types
--- TODO Define types here
-values
--- TODO Define values here
+-- Class responsible for testing all that relates to the celebrity class
+
 instance variables
 	private name: Globals`String := "Jose";
 	private celebTypes: set of Celebrity`celebrityType := {<sport>,<actor>};
@@ -19,6 +17,10 @@ instance variables
 	private contract3: [Contract] := nil;
 	private contract4: [Contract] := nil;
 operations
+
+	-- Use case scenarios:
+	--		Celebrity wants to have presence in the platform.
+	--		Fills all the information and the object relating to them is created R02
 	private testAttributes: () ==> ()
 		testAttributes() == (
 			assert(celebrity.getName() = name);
@@ -29,6 +31,14 @@ operations
 			assert(celebrity.getContracts() = []);
 		);
 		
+	-- Use case scenarios:
+	--		Celebrity accepts contracts that satisfy their requirements (role, budget and duration) 
+	--			if they haven't yet reached the limit of active contracts
+	--		Celebrity accepts contracts that satisfy their requirements, even if they have reached the limit of active contracts
+	--			if the contract does not overlap the active ones
+	--		Celebrity rejects contract if they have reached the limit of active contracts and the contract overlaps the others
+	--		Fulfills R08
+	
 	private testAddRemoveContracts: () ==> ()
 		testAddRemoveContracts() == (
 				brand.addProject(project1);
@@ -38,7 +48,7 @@ operations
 				contract3 := new Contract(15,brand,project2,celebrity,120,<ambassador>);
 				contract4 := new Contract(15,brand,project1,celebrity,120,<ambassador>);
 		
-				-- Adicionar contratos com contractos_activos < maxContratos
+				-- Adding contracts with active contracts < maximum contracts
 				assert(celebrity.checkIfContractIsGood(contract1));
 				celebrity.addContract(contract1);
 				assert(celebrity.getContracts() = [contract1]);
@@ -47,21 +57,20 @@ operations
 				celebrity.addContract(contract2);
 				assert(celebrity.getContracts() = [contract2,contract1]);
 				
-				-- Adicionar contrato com contractos_activos >= maxContratos data sem interse��o com outros contratos
+				-- Adding contract with active contracts >= maximum contracts, but no overlap
 				assert(celebrity.checkIfContractIsGood(contract3));
 				celebrity.addContract(contract3);
 				assert(celebrity.getContracts() = [contract2,contract1,contract3]);
 				
-				-- Adicionar contrato com contractos_activos >= maxContratos com data com interse��o com outros contratos
+				-- Adding an overlappign contract with active contracts >= maximum contracts
 				assert(celebrity.checkIfContractIsGood(contract4) = false);
-				--celebrity.addContract(contract4);
-				--assert(celebrity.getContracts() = [contract2,contract1,contract3]);
 				
-				-- Remover contrato
+				-- Remove contract
 				celebrity.removeContract(contract1);
 				assert(celebrity.getContracts() = [contract2,contract3]);
 		);
 		
+	-- Wrapper to sequentially execute all the tests
 	private testAll: () ==> ()
 		testAll() == (
 			testAttributes();
@@ -72,8 +81,4 @@ operations
 		main() == (
 			new CelebrityTest().testAll();
 		);
-functions
--- TODO Define functiones here
-traces
--- TODO Define Combinatorial Test Traces here
 end CelebrityTest

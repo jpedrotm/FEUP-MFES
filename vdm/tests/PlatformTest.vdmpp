@@ -1,8 +1,6 @@
 class PlatformTest is subclass of Test
-types
--- TODO Define types here
-values
--- TODO Define values here
+-- Class responsible for testing all that relates to the platform class
+
 instance variables
 	private duration: nat1 := 20;
 	private totalPrice: nat1 := 120;
@@ -17,6 +15,16 @@ instance variables
 	private contract3: [Contract] := nil;
 	private platform: Platform := new Platform(mk_Globals`Date(2000,1,1));
 operations
+
+	-- Use case scenarios
+	-- 		Brand owner adds brand to the platform (R01)
+	-- 		Brand owner removes brand from the platform (R03)
+	--		Project Manager or Brand Owner adds project to the brand (R05)
+	--		Project Manager or Brand Owner removes project from the brand (R06)
+	--		Celebrity adds himself to the platform (R02)
+	--		Celebrity removes himself from the platform (R04)
+	--		Celebrity accepts contracts that satisfy theirs requirements (R08)
+	-- 		Date of platform is updated to represent the passage of time (R09)
 	private testAttributes: () ==> ()
 		testAttributes() == (
 			dcl stepDate: Globals`Date := Globals`calculateFinalDate(mk_Globals`Date(2015,1,1),731);
@@ -42,6 +50,7 @@ operations
 			contract3 := new Contract(duration,brand,project3,celebrity,totalPrice,<ambassador>);
 			celebrity.addContract(contract3);
 
+			-- Update the date of the platform
 			platform.step(stepDate);
 			
 			assert(celebrity.getContracts() = [contract2,contract3]);
@@ -60,6 +69,7 @@ operations
 			assert(platform.currentDate = mk_Globals`Date(2017,1,2));
 		);
 		
+	-- wrapper to run all test
 	private testAll: () ==> ()
 		testAll() == (
 			testAttributes();
@@ -69,8 +79,4 @@ operations
 		main() == (
 			new PlatformTest().testAll();
 		);
-functions
--- TODO Define functiones here
-traces
--- TODO Define Combinatorial Test Traces here
 end PlatformTest

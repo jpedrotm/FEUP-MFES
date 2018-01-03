@@ -1,10 +1,7 @@
 class ProjectTest is subclass of Test
-types
--- TODO Define types here
-values
--- TODO Define values here
-instance variables
+-- Class responsible for testing all that relates to the contract class
 
+instance variables
 	proj: Project := new Project("name", 5, {<ambassador> |-> 1, <speaker> |-> 4}, {<ambassador> |-> 1000, <speaker> |-> 500}, {<tech>}, 20, mk_Globals`Date(2016,1,10));
 	brand: Brand := new Brand("name");
 	c1: Celebrity := new Celebrity("name", {<tech>}, 10, 30, {<speaker>}, 5); -- Celebrity that fits all requirements
@@ -20,8 +17,10 @@ instance variables
 	cont4: [Contract] := nil;
 	cont5: [Contract] := nil;
 	
--- TODO Define instance variables here
 operations
+
+	-- Use case scenarios
+	--		Project manager / Brand owner adds a project to the brand (R05)
 	public testCreateProject: () ==> ()
 		testCreateProject() == 
 		(
@@ -45,6 +44,9 @@ operations
 			assert(p.getDesiredNumForRole(<productPlacement>) = 0);
 		);
 		
+	-- Use case scenario
+	--		Project Manager / Brand Owner want to make a contract, they search for celebrities that fit
+	--			the project's type and role requirements (R07)
 	public testSearchCelebs: () ==> ()
 		testSearchCelebs() ==
 		(		
@@ -55,6 +57,9 @@ operations
 			assert(proj.getAppropriateCelebs(celebs) = {c1});
 		);
 		
+	-- Use case scenarios
+	--		Project Manager/Brand owner propose a contract to a celebrity that fulfills their requirements 
+	--		Celebrity accepts or rejects the contracts according to budget, duration and maximum amount of contracts constraints
 	public testProposeContract: () ==> ()
 		testProposeContract() == 
 		(
@@ -72,11 +77,12 @@ operations
 
 			assert(proj.proposeContract(cont1, c1) = true);
 			assert(proj2.proposeContract(cont5,c7) = true); -- fill up c7's contract slots
-			assert(proj.proposeContract(cont2, c5) = false);
-			assert(proj.proposeContract(cont3, c6) = false);
-			assert(proj.proposeContract(cont4, c7) = false);
+			assert(proj.proposeContract(cont2, c5) = false); -- contract period too large
+			assert(proj.proposeContract(cont3, c6) = false); -- contract payment too small
+			assert(proj.proposeContract(cont4, c7) = false); -- maximum contracts reached
 		);
 		
+	-- wrapper to execute all tests
 	public testAll: () ==> ()
 		testAll() == 
 		(
@@ -87,9 +93,4 @@ operations
 
 	public main: () ==> ()
 		main() == new ProjectTest().testAll();
-
-functions
--- TODO Define functiones here
-traces
--- TODO Define Combinatorial Test Traces here
 end ProjectTest

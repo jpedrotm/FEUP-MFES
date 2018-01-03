@@ -1,18 +1,8 @@
 class Test
-types
--- TODO Define types here
-values
--- TODO Define values here
-instance variables
--- TODO Define instance variables here
+	-- Simulates assertion checking by reducing it to pre-condition checking.
+	-- If 'arg' does not hold, a pre-condition violation will be signaled.
 operations
--- TODO Define operations here
 	protected assert: bool ==> ()
 		assert(a) == return
 		pre a;
-		
-functions
--- TODO Define functiones here
-traces
--- TODO Define Combinatorial Test Traces here
 end Test

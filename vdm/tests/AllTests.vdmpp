@@ -1,4 +1,5 @@
 class AllTests
+-- Class that is used to quickly run all tests
 operations
 	public static main: () ==> ()
 		main() == (
