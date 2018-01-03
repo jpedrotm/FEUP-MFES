@@ -60,6 +60,10 @@ public class Celebrity {
 
     return maxTime;
   }
+  
+  public Number getMaxContracts() {
+	  return maxContracts;
+  }
 
   public VDMSet getRoles() {
 

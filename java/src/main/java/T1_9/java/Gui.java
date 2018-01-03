@@ -208,21 +208,109 @@ public class Gui implements Consumer<TextIO> {
 		VDMSet celebs = platform.getCelebs();
 		int index = 0;
 
-		for (Iterator iterator = celebs.iterator(); iterator.hasNext();) {
-			Celebrity celeb = (Celebrity) iterator.next();
-			terminal.println((1 + index++) + " - " + celeb.toString());
+		if(celebs.size() > 0) {
+			for (Iterator iterator = celebs.iterator(); iterator.hasNext();) {
+				Celebrity celeb = (Celebrity) iterator.next();
+				terminal.println((1 + index++) + " - " + celeb.getName());
+			}
+			
+			terminal.println("\n");
+			terminal.println("1 - See celebrity.");
+			terminal.println("2 - Delete celebrity.");
+			terminal.println("3 - Back.");
+			terminal.println("4 - Main Menu.");
+			
+			int option = textIO.newIntInputReader().withMinVal(1).withMaxVal(4).read("Select a option: ");
+
+			switch (option) {
+			case 1:
+				int chosenBrand = textIO.newIntInputReader().withMinVal(1).withMaxVal(index).read("Enter celebrity number: ");
+				Iterator iterator = celebs.iterator();
+				Celebrity celeb = null;
+				for (int i = 0; i < chosenBrand; i++) {
+					if (iterator.hasNext())
+						celeb = (Celebrity) iterator.next();
+				}
+				celebrityDrillDownView(textIO,terminal,props,celeb);
+				break;
+			case 2:
+				celebrityView(textIO, terminal, props);
+				break;
+			case 3:
+				mainMenuView(textIO, terminal, props);
+				break;
+			}
+		} else {
+			terminal.println("There are no celebrities at the moment.");
+			
+			int option = textIO.newIntInputReader().withMinVal(1).withMaxVal(3)
+					.read("Press (e) to exit to celebrities menu or (m) to exit to main menu:");
+			switch (option) {
+			case 'e':
+				celebrityView(textIO, terminal, props);
+				break;
+			case 'm':
+				mainMenuView(textIO, terminal, props);
+				break;
+			}
 		}
+	}
+	
+	public void celebrityDrillDownView(TextIO textIO,SwingTextTerminal terminal,TerminalProperties<?> props,Celebrity celeb) {
+		setSubtitle(textIO, terminal, props, "Celebrity Info");
+		
+		terminal.println("Name: "+celeb.getName());
+		terminal.println("Types:");
+		for(Iterator iterator = celeb.getType().iterator();iterator.hasNext();) {
+			terminal.println(" - "+iterator.next());
+		}
+		
+		terminal.println("\nMinimum price per contract: "+celeb.getMinPrice());
+		terminal.println("Maximum time per contract: "+celeb.getMaxTime());
+		
+		terminal.println("\nRoles:");
+		for(Iterator iterator = celeb.getRoles().iterator();iterator.hasNext();) {
+			terminal.println(" - "+iterator.next());
+		}
+		
+		terminal.println("\nMaximum of contracts at the same time: "+celeb.getMaxContracts());
+		
+		if(celeb.getContracts().size() == 0) {
+			terminal.println("This celebrity has no contracts.");
+		}
+		else {
+			terminal.println("Contracts: ");
+			printContractCelebrity(textIO,terminal,props,celeb);
+		}
+	}
+	
+	public void printContractCelebrity(TextIO textIO,SwingTextTerminal terminal,TerminalProperties<?> props,Celebrity celeb) {
+		VDMSeq contracts = celeb.getContracts();
+		if (contracts.isEmpty()) {
+			terminal.println("There are no contracts yet!");
+		} else {
 
-		int option = textIO.newCharInputReader().withPossibleValues('e', 'm')
-				.read("Press (e) to exit to celebrities or (m) to exit to main menu:");
+			int index = 0;
+			for (Iterator iterator = contracts.iterator(); iterator.hasNext();) {
+				Contract contract = (Contract) iterator.next();
+				terminal.rawPrint((1 + index++) + " - "
+						+ contract.getTotalPrice() + "$ - role - "
+						+ contract.getRole().toString().replace("<", "").replace(">", "") + "\n\tStarting at "
+						+ contract.getStartDate() + "and expiring at " + contract.getFinalDate() + "\n\n");
+			}
+		}
+		
+		terminal.println("1 - Back to celebrity menu.");
+		terminal.println("2 - Back to main menu.");
 
+		int option = textIO.newIntInputReader().withMinVal(1).withMaxVal(2).read("Choose an option: ");
 		switch (option) {
-		case 'e':
-			celebrityView(textIO, terminal, props);
-			break;
-		case 'm':
+		case 1:
+			celebrityDrillDownView(textIO, terminal, props,celeb);
+			return;
+		case 2:
 			mainMenuView(textIO, terminal, props);
-			break;
+			return;
 		}
 	}
 
@@ -301,36 +389,52 @@ public class Gui implements Consumer<TextIO> {
 		VDMSet celebs = platform.getCelebs();
 		int index = 0;
 
-		for (Iterator iterator = celebs.iterator(); iterator.hasNext();) {
-			Celebrity celeb = (Celebrity) iterator.next();
-			terminal.println((1 + index++) + " - " + celeb.toString());
-		}
+		if(celebs.size() != 0) {
+			for (Iterator iterator = celebs.iterator(); iterator.hasNext();) {
+				Celebrity celeb = (Celebrity) iterator.next();
+				terminal.println((1 + index++) + " - " + celeb.toString());
+			}
 
-		int option;
-		while (true) {
-			option = textIO.newIntInputReader().withMinVal(1).withMaxVal(celebs.size())
-					.read("Select a celebrity to be deleted (press '0' to go back): ");
+			int option;
+			while (true) {
+				option = textIO.newIntInputReader().withMinVal(0).withMaxVal(celebs.size())
+						.read("Select a celebrity to be deleted (press '0' to go back): ");
 
-			if (option == 0)
+				if (option == 0)
+					celebrityView(textIO, terminal, props);
+
+				int answer = textIO.newCharInputReader().withInlinePossibleValues('y', 'n')
+						.read("Are you sure you want to delete this celebrity? ");
+				if (answer == 'y')
+					break;
+			}
+
+			int i = 1;
+			for (Iterator iterator = celebs.iterator(); iterator.hasNext();) {
+				Celebrity celeb = (Celebrity) iterator.next();
+				if (i == option) {
+					removeCelebrityFromPlatform(celeb);
+					break;
+				}
+				i++;
+			}
+
+			mainMenuView(textIO, terminal, props);
+		} else {
+			terminal.println("There are no celebrities at the moment.");
+			
+			int option = textIO.newCharInputReader().withPossibleValues('e', 'm')
+					.read("Press (e) to exit to celebrities or (m) to exit to main menu:");
+
+			switch (option) {
+			case 'e':
 				celebrityView(textIO, terminal, props);
-
-			int answer = textIO.newCharInputReader().withInlinePossibleValues('y', 'n')
-					.read("Are you sure you want to delete this celebrity? ");
-			if (answer == 'y')
 				break;
-		}
-
-		int i = 1;
-		for (Iterator iterator = celebs.iterator(); iterator.hasNext();) {
-			Celebrity celeb = (Celebrity) iterator.next();
-			if (i == option) {
-				removeCelebrityFromPlatform(celeb);
+			case 'm':
+				mainMenuView(textIO, terminal, props);
 				break;
 			}
-			i++;
 		}
-
-		mainMenuView(textIO, terminal, props);
 	}
 
 	public VDMSet fillSetTypes(HashSet<Integer> typesSelected) {
@@ -459,49 +563,65 @@ public class Gui implements Consumer<TextIO> {
 		VDMSet brands = platform.getBrands();
 		int index = 0;
 
-		for (Iterator iterator = brands.iterator(); iterator.hasNext();) {
-			Brand brand = (Brand) iterator.next();
-			terminal.println((1 + index++) + " - " + brand.getName());
-		}
-
-		terminal.println("\n");
-		terminal.println("1 - See brand.");
-		terminal.println("2 - Delete brand.");
-		terminal.println("3 - Back.");
-		terminal.println("4 - Main Menu.");
-
-		int option = textIO.newIntInputReader().withMinVal(1).withMaxVal(4).read("Choose an option: ");
-
-		switch (option) {
-		case 1:
-			int chosenBrand = textIO.newIntInputReader().withMinVal(1).withMaxVal(index).read("Enter brand number: ");
-			Iterator iterator = brands.iterator();
-			Brand brand = null;
-			for (int i = 0; i < chosenBrand; i++) {
-				if (iterator.hasNext())
-					brand = (Brand) iterator.next();
+		if(brands.size() > 0) {
+			for (Iterator iterator = brands.iterator(); iterator.hasNext();) {
+				Brand brand = (Brand) iterator.next();
+				terminal.println((1 + index++) + " - " + brand.getName());
 			}
-			brandDrilldownView(textIO, terminal, props, brand);
-			break;
 
-		case 2:
-			int toDelete = textIO.newIntInputReader().withMinVal(1).withMaxVal(index).read("Enter brand number: ");
-			Iterator it = brands.iterator();
-			Brand b = null;
-			for (int i = 0; i < toDelete; i++) {
-				if (it.hasNext())
-					b = (Brand) it.next();
+			terminal.println("\n");
+			terminal.println("1 - See brand.");
+			terminal.println("2 - Delete brand.");
+			terminal.println("3 - Back.");
+			terminal.println("4 - Main Menu.");
+
+			int option = textIO.newIntInputReader().withMinVal(1).withMaxVal(4).read("Choose an option: ");
+
+			switch (option) {
+			case 1:
+				int chosenBrand = textIO.newIntInputReader().withMinVal(1).withMaxVal(index).read("Enter brand number: ");
+				Iterator iterator = brands.iterator();
+				Brand brand = null;
+				for (int i = 0; i < chosenBrand; i++) {
+					if (iterator.hasNext())
+						brand = (Brand) iterator.next();
+				}
+				brandDrilldownView(textIO, terminal, props, brand);
+				break;
+
+			case 2:
+				int toDelete = textIO.newIntInputReader().withMinVal(1).withMaxVal(index).read("Enter brand number: ");
+				Iterator it = brands.iterator();
+				Brand b = null;
+				for (int i = 0; i < toDelete; i++) {
+					if (it.hasNext())
+						b = (Brand) it.next();
+				}
+				platform.removeBrand(b);
+				listBrandsView(textIO, terminal, props);
+				break;
+			case 3:
+				brandView(textIO, terminal, props);
+				break;
+
+			case 4:
+				mainMenuView(textIO, terminal, props);
+				break;
 			}
-			platform.removeBrand(b);
-			listBrandsView(textIO, terminal, props);
-			break;
-		case 3:
-			brandView(textIO, terminal, props);
-			break;
+		} else {
+			terminal.println("There are no brands at the moment.");
+			
+			int option = textIO.newCharInputReader().withPossibleValues('e', 'm')
+					.read("Press (e) to exit to brands menu or (m) to exit to main menu:");
 
-		case 4:
-			mainMenuView(textIO, terminal, props);
-			break;
+			switch (option) {
+			case 'e':
+				celebrityView(textIO, terminal, props);
+				break;
+			case 'm':
+				mainMenuView(textIO, terminal, props);
+				break;
+			}
 		}
 	}
 
@@ -826,13 +946,15 @@ public class Gui implements Consumer<TextIO> {
 		VDMMap roleNumMap = MapUtil.map();
 		VDMMap roleBudgetMap = MapUtil.map();
 		VDMSet typesSet = SetUtil.set();
-		int availableContracts = maxContracts;
+		int availableContracts = maxContracts-(selectedRoles.size()-1);
+		int totalContracts = 0;
 		for (Integer roleIndex : selectedRoles) {
 			Object quote = getRoleQuoteInstance(roleIndex);
 			int numForRole = textIO.newIntInputReader().withMinVal(1).withMaxVal(availableContracts)
 					.read("How many contracts do you want for the role of " + contractRoles.get(roleIndex)
 					+ " (max. " + availableContracts + ", min. 1)");
-			availableContracts -= numForRole;
+			totalContracts += numForRole;
+			availableContracts = maxContracts - totalContracts;
 
 			int budgetForRole = textIO.newIntInputReader().withMinVal(1)
 					.read("What is your budget for the role of " + contractRoles.get(roleIndex));
